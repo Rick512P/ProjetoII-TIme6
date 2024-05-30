@@ -1,7 +1,7 @@
 #include "../Arquivos-h/imprimeSimulador.h"
 
 
-void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, instrucao *memoriaInst){
+void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoriaInst){
     for(int i=0;i<tamLinhas;i++){
             printf("\n\nInstrucao %d de %d: [%s]", i+1, tamLinhas, memoriaInst[i].instruc);
             if (strcmp((*instrucoesDecodificadas)[i].opcode, "0000") == 0){
@@ -35,7 +35,7 @@ void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, ins
 }
 
 
-void imprimeEstatisticas(instrucao *memoriaInst, int tamLinhas, type_instruc **instrucoesDecodificadas){
+void imprimeEstatisticas(Memorias *memoriaInst, int tamLinhas, type_instruc **instrucoesDecodificadas){
     if (memoriaInst == NULL) {
                 fprintf(stderr, "Falha ao obter instruções.\n");
             }

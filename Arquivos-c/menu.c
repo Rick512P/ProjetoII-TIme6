@@ -7,19 +7,17 @@ int main(){
 
 int menu(){
     Assembly *AssemblyInst;
-    MemoriaDados *md;
+    Memorias *memorias;
+    RegistradoresAux *aux = malloc(sizeof(RegistradoresAux));
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
     int state = -1;
-    instrucao *memoriaInst; //RESPONSAVEL POR COLETAR  A INSTRUÇÃO
     int *regs; //registradores como um inteiro mesmo
     char dat[300]; //Recebe o nome do arquivo.dat
     regs = (int*)malloc(8 * sizeof(int));
     for (int i=0;i<8;i++){ //zerando registradores, caso contrario dá números inconsistentes
         regs[i] = 0;
     }
-
-    type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*));
-    md = (MemoriaDados*)calloc(256, sizeof(MemoriaDados));
+    type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*)); 
 
     printf("\n___________________________________________ ==ATENÇÃO== ____________________________________________\n\n");
     printf("| + TODOS OS ARQUIVOS DE INSTRUÇÂO DEVEM ESTAR NA PASTA 'memoria' COM O SEGUINTE NOME E EXTENSÂO + |\n");
@@ -45,8 +43,7 @@ int menu(){
         switch (escolha)
         {
         case 0:
-            free(md);
-            free(memoriaInst);
+            free(memorias);
             free(regs);
             free(AssemblyInst);
             free(instrucoesDecodificadas);
@@ -55,7 +52,7 @@ int menu(){
             break;
             
         case 1: //Carregar memória de Instruções
-            parser(&memoriaInst, &tamLinhas);
+            parser(&memorias, &tamLinhas);
             *instrucoesDecodificadas = malloc(tamLinhas * sizeof(type_instruc));
             if (*instrucoesDecodificadas == NULL) {
                 fprintf(stderr, "Falha ao alocar memória para instruções decodificadas.\n");
@@ -63,7 +60,6 @@ int menu(){
             }
             
             AssemblyInst = calloc((tamLinhas + 1), sizeof(Assembly));
-
             if (AssemblyInst == NULL) {
                 fprintf(stderr, "Falha ao alocar memória para instrucoes assembly.\n");
                 return -1;
@@ -72,7 +68,7 @@ int menu(){
 
         case 2: //Carregar Memória de Dados
             if (program_counter == 0){
-                strcpy(dat,carregamd(&md));
+                strcpy(dat,carregamd(&memorias));
                 printf("\n");
                 puts(dat);
                 printf("\n");
@@ -85,8 +81,8 @@ int menu(){
             break;
 
         case 3: //Imprimir memória de instruções e memória de dados
-            imprimeMemInstruc(memoriaInst, tamLinhas);
-            imprimeDados(md, tamLinhas);
+            imprimeMemInstruc(memorias, tamLinhas);
+            imprimeDados(memorias, tamLinhas);
             break;
 
         case 4: //Imprimir registradores
@@ -94,7 +90,7 @@ int menu(){
             break;
 
         case 5: //Imprimir estatísticas como: quantas intruc, classes, etc;
-            imprimeEstatisticas(memoriaInst, tamLinhas, instrucoesDecodificadas);
+            imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas);
             break;
             
         case 6: // Imprimir Assembly
@@ -102,9 +98,9 @@ int menu(){
             break;
 
         case 7: //imprimir todo o simulador
-            imprimeEstatisticas(memoriaInst, tamLinhas, instrucoesDecodificadas);
-            imprimeSimulador(tamLinhas, instrucoesDecodificadas, memoriaInst);      
-            imprimeDados(md, tamLinhas);
+            imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas);
+            imprimeSimulador(tamLinhas, instrucoesDecodificadas, memorias);      
+            imprimeDados(memorias, tamLinhas);
             imprimirASM(AssemblyInst, tamLinhas);
             imprimeRegistradores(regs);
             break;
@@ -114,17 +110,17 @@ int menu(){
             break;
 
         case 9: //Salvar arquivo DATA.dat
-            escreverArquivoMemoria(md);
+            escreverArquivoMemoria(memorias);
             break;
 
         case 10: //Chamar função responsável pela execução do programa
             program_counter = 0;
-            controller(1, &state, &memoriaInst, tamLinhas, &regs, &md, &program_counter, instrucoesDecodificadas);
+            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
         case 11: //Chamar função responsável pela execução do programa passo a passo
-            controller(2, &state, &memoriaInst, tamLinhas, &regs, &md, &program_counter, instrucoesDecodificadas);
+            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
@@ -136,12 +132,12 @@ int menu(){
                 state = -1;
                 break;
             }
-            memset(md, 0, sizeof(md)); //anula todo conteudo de md
+            memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de md
 
             if (cont == 1){
-                recarregarmd(&md, dat);
+                recarregarmd(&memorias, dat);
             }
-            backstep(&state, &memoriaInst, tamLinhas, &regs, &md, &program_counter, instrucoesDecodificadas);
+            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas);
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             

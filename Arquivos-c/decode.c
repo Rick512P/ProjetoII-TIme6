@@ -1,6 +1,6 @@
 #include "../Arquivos-h/decode.h"
 
-type_instruc decoder(instrucao **memoriaInst, int contador){
+type_instruc decoder(Memorias **memoriaInst, int contador){
     int i = contador;
     type_instruc traducao;
     (*memoriaInst)[i].instruc[16] = '\0';

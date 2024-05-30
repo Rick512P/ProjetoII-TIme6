@@ -3,12 +3,12 @@
 
 
 #include "bibliotecas.h"
-#include "memoria_instruc.h"
+#include "memorias.h"
 
 
 
 
-int parser(instrucao **memoriaInst, int *tamanho_linhas);
+int parser(Memorias **memoriaInst, int *tamanho_linhas);
 
 
 #endif

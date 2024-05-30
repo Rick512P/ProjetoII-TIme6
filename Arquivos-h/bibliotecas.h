@@ -6,13 +6,6 @@
 #include <unistd.h>
 #include <string.h>
 
-//instrucao da memoria de instruções
-typedef struct{
-    char instruc[17];
-
-}instrucao;
-
-
 //intrucao traduzida
 typedef struct{
     char opcode[5];
@@ -31,13 +24,17 @@ typedef struct{
     //TIPO J
     char addr[8];
 
+    char inst[17];
+
 }type_instruc;
 
 
-//tamanho da memoria de dados
+//Memoria de dados e instrucoes unidas
 typedef struct {
     char dados[9];
-} MemoriaDados;
+    char instruc[17];
+} Memorias;
+
 
 //instruções em assembly
 typedef struct{
@@ -45,5 +42,13 @@ typedef struct{
 } Assembly;
 
 
+typedef struct {
+  char registradorInst[17];
+  char registradorEnd[256];
+  char registradorDados[17];
+  char registradorDeslocA[4];
+  char registradorDeslocB[7];
+  char registradorResult[4];
+} RegistradoresAux;
 
 #endif

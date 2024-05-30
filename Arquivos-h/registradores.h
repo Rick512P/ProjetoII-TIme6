@@ -1,7 +1,7 @@
 #ifndef __REGISTRADORES_H__
 #define __REGISTRADORES_H__
 
-#include "memoria_instruc.h"
+#include "memorias.h"
 #include "decode.h"
 #include "ULA.h"
 #include "bibliotecas.h"

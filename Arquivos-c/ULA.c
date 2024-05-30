@@ -1,7 +1,7 @@
 #include "../Arquivos-h/ULA.h"
 
 
-int ULA(type_instruc **instrucoesDecodificadas, int *contador, MemoriaDados **md, int **regs) {
+int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, int **regs) {
   
     int address, rs, rt, rd;
 

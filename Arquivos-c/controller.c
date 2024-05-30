@@ -1,7 +1,7 @@
 
 #include "../Arquivos-h/controller.h"
 
-int controller(int op, int *state, instrucao **memoriaInst, int tamLinhas, int **regs, MemoriaDados **md, int *program_counter, type_instruc **instrucoesDecodificadas){
+int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas){
     int jump, RD, RT, i, a=0;
 
     for(int j=0;j<tamLinhas;j++){
@@ -90,7 +90,7 @@ int controller(int op, int *state, instrucao **memoriaInst, int tamLinhas, int *
     return 0;
 }
 
-void backstep(int *state, instrucao **memoriaInst, int tamLinhas, int **regs, MemoriaDados **md, int *program_counter, type_instruc **instrucoesDecodificadas){
+void backstep(int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas){
     int jump, RD, RT, i, a=0;
     for (i = 0; i<8; i++){
         (*regs)[i]=0;

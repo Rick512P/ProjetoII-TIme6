@@ -1,7 +1,7 @@
 #include "../Arquivos-h/carregaMemoriaDados.h"
 
 
-char* carregamd(MemoriaDados **md){
+char* carregamd(Memorias **md){
     FILE *setmd;
     char linha[1024];
     char* nome_arquivo = (char*)malloc(300 * sizeof(char));
@@ -37,7 +37,7 @@ char* carregamd(MemoriaDados **md){
 
         
         if (md == NULL)
-            *md = malloc(256 * sizeof(MemoriaDados));
+            *md = malloc(256 * sizeof(Memorias));
         
         rewind(setmd);
         
@@ -66,7 +66,7 @@ char* carregamd(MemoriaDados **md){
     }
 }
 
-void recarregarmd(MemoriaDados **md, char *nome_arquivo){
+void recarregarmd(Memorias **md, char *nome_arquivo){
     FILE *setmd;
     char linha[1024];
     int contador_de_linhas = 0, opcao;
@@ -82,7 +82,7 @@ void recarregarmd(MemoriaDados **md, char *nome_arquivo){
 
         
         if (md == NULL)
-            *md = malloc(256 * sizeof(MemoriaDados));
+            *md = malloc(256 * sizeof(Memorias));
         
         rewind(setmd);
         

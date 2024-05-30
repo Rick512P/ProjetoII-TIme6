@@ -2,10 +2,8 @@
 #define __DECODE_H__
 
 #include "bibliotecas.h"
+#include "memorias.h"
 
-
-#include "memoria_instruc.h"
-
-type_instruc decoder(instrucao **memoriaInst, int contador);
+type_instruc decoder(Memorias **memoriaInst, int contador);
 
 #endif

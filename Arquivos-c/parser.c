@@ -1,10 +1,10 @@
 #include "../Arquivos-h/parser.h"
 
 //RESPONSAVEL POR ABRIR O ARQUIVO E ENCHER A MEMORIA DE INSTRUÇÕES
-int parser(instrucao **memoriaInst, int *tamanho_linhas){
+int parser(Memorias **memoriaInst, int *tamanho_linhas){
     char linha[100], nome_arquivo[200];
     int contador_de_linhas = 0, opcao;
-    instrucao p;
+    Memorias p;
     FILE *arq;
     printf("Digite 1 para utilizar o diretorio padrao ou 2 para entrar com o diretorio do arquivo: ");
     scanf("%d", &opcao);
@@ -36,7 +36,7 @@ int parser(instrucao **memoriaInst, int *tamanho_linhas){
         *tamanho_linhas = contador_de_linhas;
 
         //alocaçao de memoria que minha variavel memoriaInst terá será = ao tanto de linhas do arquivo lido
-        *memoriaInst = malloc(256 * sizeof(instrucao));
+        memoriaInst = malloc(256 * sizeof(Memorias));
 
         if (!memoriaInst) { //se memoriaInst nao ter nada alocado, dará erro.
             fprintf(stderr, "Falha na alocação de memória para instruções.\n"); //stderr envia mensagem de erro
