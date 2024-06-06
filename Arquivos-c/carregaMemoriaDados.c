@@ -1,6 +1,5 @@
 #include "../Arquivos-h/carregaMemoriaDados.h"
 
-
 char* carregamd(Memorias **md){
     FILE *setmd;
     char linha[1024];
@@ -36,8 +35,8 @@ char* carregamd(Memorias **md){
         }
 
         
-        if (md == NULL)
-            *md = malloc(256 * sizeof(Memorias));
+        if (*md == NULL)
+            *md = malloc(contador_de_linhas * sizeof(Memorias));
         
         rewind(setmd);
         
@@ -66,38 +65,19 @@ char* carregamd(Memorias **md){
     }
 }
 
-void recarregarmd(Memorias **md, char *nome_arquivo){
-    FILE *setmd;
-    char linha[1024];
-    int contador_de_linhas = 0, opcao;
-
-    setmd = fopen(nome_arquivo, "r");
-
-    if (setmd){
-        
-        //primeiro, conto quantas linhas de dados terei no arquivo
-        while(fgets(linha, sizeof(linha), setmd) != NULL){
-            contador_de_linhas++;
-        }
-
-        
-        if (md == NULL)
-            *md = malloc(256 * sizeof(Memorias));
-        
-        rewind(setmd);
-        
-        for (int i=0;i<contador_de_linhas;i++){
-            if (fgets(linha, sizeof(linha), setmd) == NULL)
-                   break;
-
-            linha[strcspn(linha, "\r\n")] = '\0';
-
-            // Copia a linha para a estrutura memoria de Dados
-            strncpy((*md)[i].dados, linha, 9);
-            (*md)[i].dados[sizeof((*md)[i].dados) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-            
-        }
-        fclose(setmd);        
+void escreverArquivoMemoria(Memorias *md) {
+    FILE *arquivo;
+    arquivo = fopen("./DATA.dat", "w");
+    
+    if(arquivo==NULL){
+        fprintf(stderr, "Erro ao abrir o arquivo DATA.dat\n");
+        return;
     }
-
+    
+    for (int i=0; i<256; i++){
+        fprintf(arquivo, "%s\n", md[i].dados);
+    }
+    
+    fclose(arquivo);
+    printf("\nArquivo criado com sucesso!\n\n");
 }
