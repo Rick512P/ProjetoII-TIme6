@@ -36,9 +36,9 @@ int parser(Memorias **memoriaInst, int *tamanho_linhas){
         *tamanho_linhas = contador_de_linhas;
 
         //alocaçao de memoria que minha variavel memoriaInst terá será = ao tanto de linhas do arquivo lido
-        memoriaInst = malloc(256 * sizeof(Memorias));
+        *memoriaInst = malloc(contador_de_linhas * sizeof(Memorias));
 
-        if (!memoriaInst) { //se memoriaInst nao ter nada alocado, dará erro.
+        if (!(*memoriaInst)) { //se memoriaInst nao ter nada alocado, dará erro.
             fprintf(stderr, "Falha na alocação de memória para instruções.\n"); //stderr envia mensagem de erro
             //separadamente do fluxo principal de saída de um programa
             return 1;
@@ -59,12 +59,6 @@ int parser(Memorias **memoriaInst, int *tamanho_linhas){
             strncpy((*memoriaInst)[i].instruc, linha, 17);
             (*memoriaInst)[i].instruc[sizeof((*memoriaInst)[i].instruc) - 1] = '\0'; // certifica-se de que a string termina com null terminator
         }
-        if(contador_de_linhas <=256){
-            for(int j=contador_de_linhas;j < 256; j++){
-                strncpy((*memoriaInst)[j].instruc, "0000000000000000", 17);
-            }
-
-        }
         
         fclose(arq);
         printf("Arquivo lido com sucesso!");
@@ -73,4 +67,6 @@ int parser(Memorias **memoriaInst, int *tamanho_linhas){
 
     else
         fprintf(stderr, "Erro ao abrir arquivo de instrucoes.");
+
+    return 0; // Retorna 0 indicando sucesso
 }
