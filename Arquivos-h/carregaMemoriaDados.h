@@ -5,7 +5,6 @@
 #include "menu.h"
 
 char* carregamd(MemoriaDados **md);
-void recarregarmd(MemoriaDados **md, char *nome_arquivo);
-
+void escreverArquivoMemoria(MemoriaDados *md);
 
 #endif
