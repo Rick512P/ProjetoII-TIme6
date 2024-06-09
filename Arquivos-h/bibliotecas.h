@@ -31,7 +31,7 @@ typedef struct{
 
 //Memoria de dados e instrucoes unidas
 typedef struct {
-    char dados[9];
+    char dados[17];
     char instruc[17];
 } Memorias;
 
@@ -44,11 +44,10 @@ typedef struct{
 
 typedef struct {
   char registradorInst[17];
-  char registradorEnd[256];
   char registradorDados[17];
-  char registradorDeslocA[4];
-  char registradorDeslocB[7];
-  char registradorResult[4];
+  char registradorA[4];
+  char registradorB[7];
+  int registradorResult;
 } RegistradoresAux;
 
 #endif

@@ -11,14 +11,14 @@ int menu(){
     RegistradoresAux *aux = malloc(sizeof(RegistradoresAux));
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
     int state = -1;
-    int *regs; //registradores como um inteiro mesmo
+    type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*));
     char dat[300]; //Recebe o nome do arquivo.dat
-    regs = (int*)malloc(8 * sizeof(int));
-    for (int i=0;i<8;i++){ //zerando registradores, caso contrario dá números inconsistentes
+    //int *regs; //registradores como um inteiro mesmo
+    //regs = (int*)malloc(8 * sizeof(int));
+    int regs[8];
+    for(int i=0;i<8;i++){//zerando registradores, caso contrario dá números inconsistentes
         regs[i] = 0;
     }
-    type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*)); 
-
     printf("\n___________________________________________ ==ATENÇÃO== ____________________________________________\n\n");
     printf("| + TODOS OS ARQUIVOS DE INSTRUÇÂO DEVEM ESTAR NA PASTA 'memoria' COM O SEGUINTE NOME E EXTENSÂO + |\n");
     printf("__________________________________________ =INSTRUCT.mem= __________________________________________");
@@ -58,7 +58,7 @@ int menu(){
                 fprintf(stderr, "Falha ao alocar memória para instruções decodificadas.\n");
                 return -1;
             }
-            
+
             AssemblyInst = calloc((tamLinhas + 1), sizeof(Assembly));
             if (AssemblyInst == NULL) {
                 fprintf(stderr, "Falha ao alocar memória para instrucoes assembly.\n");
@@ -115,12 +115,12 @@ int menu(){
 
         case 10: //Chamar função responsável pela execução do programa
             program_counter = 0;
-            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas);
+            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, aux);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
         case 11: //Chamar função responsável pela execução do programa passo a passo
-            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas);
+            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, aux);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
@@ -137,7 +137,7 @@ int menu(){
             if (cont == 1){
                 recarregarmd(&memorias, dat);
             }
-            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas);
+            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, aux);
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             

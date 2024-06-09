@@ -46,9 +46,9 @@ int parser(Memorias **memoriaInst, int *tamanho_linhas){
 
         // Reinicia o arquivo para ler desde a 1° linha
         rewind(arq);
-
-
-        for (int i=0;i<contador_de_linhas;i++){
+        int i = 0;
+        
+        while((i<contador_de_linhas) && (i<=255)){ //coloca as instrucoes na memoria (area das instrucoes)
             if (fgets(linha, sizeof(linha), arq) == NULL)
                 break;
             
@@ -58,8 +58,12 @@ int parser(Memorias **memoriaInst, int *tamanho_linhas){
             // Copia a linha para a estrutura memoriaInst
             strncpy((*memoriaInst)[i].instruc, linha, 17);
             (*memoriaInst)[i].instruc[sizeof((*memoriaInst)[i].instruc) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+
+
+            i++;
+            if(i == 255)
+                printf("\nOVERFLOW. Numero de instrucoes atingiu limite maximo na memoria\n");
         }
-        
         fclose(arq);
         printf("Arquivo lido com sucesso!");
     }

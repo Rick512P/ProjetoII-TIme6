@@ -79,7 +79,7 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
         int immediate, dados;
         immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
         //Agora sei qual a posicao Immediate em decimal:
-        dados = bin_to_decimal((*md)[immediate].dados);
+        dados = bin_to_decimal(md[immediate + 256]->dados);
         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
         return dados;
     }
@@ -87,16 +87,16 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"1111") == 0){// sw GRAVA CONTEUDO NA MEMORIA DE DADOS
         //M[$rs + imm] = $rt
         int immediate, conteudo;
-        char conteudo_bin[9];
-        conteudo_bin[8] = '\0';
+        char conteudo_bin[17];
+        conteudo_bin[16] = '\0';
         conteudo = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
         immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
         if (conteudo > 127 || conteudo < -128){
             fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
             if (conteudo > 127)
-                strcpy(conteudo_bin, "01111111"); //Escreve 32
+                strcpy(conteudo_bin, "0000000001111111"); //Escreve 32
             else
-                strcpy(conteudo_bin, "10000001"); //Escreve -32
+                strcpy(conteudo_bin, "1111111110000001"); //Escreve -32
             escreveDado(md, &immediate, conteudo_bin);
             return -1;
         }

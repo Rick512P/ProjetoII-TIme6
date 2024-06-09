@@ -5,6 +5,8 @@
         "registradores.h": "c",
         "parser.h": "c",
         "decode.h": "c",
-        "menu.h": "c"
+        "menu.h": "c",
+        "controller.h": "c",
+        "imprimeregsaux.h": "c"
     }
 }

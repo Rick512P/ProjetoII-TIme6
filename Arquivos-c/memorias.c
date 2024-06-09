@@ -1,14 +1,18 @@
 #include "../Arquivos-h/memorias.h"
 
 
-type_instruc memInstruc(int contador, Memorias **memoriaInst, int *tamLinhas){
-    type_instruc traduzido; //DECOMPOE A INSTRUÇÃO EM OPCODE, RS, RT, RD, FUNCT, IMM OU ADDR
-            //PC PASSA O ENDEREÇO, INCREMENTANDO +1
+type_instruc Memoria(RegistradoresAux *aux, int sinal){
+    if(sinal == 0){
+        type_instruc traduzido; //DECOMPOE A INSTRUÇÃO EM OPCODE, RS, RT, RD, FUNCT, IMM OU ADDR
 
-            traduzido = decoder(memoriaInst, contador); //DECODER IRA DECOMPOR A INSTRUÇÃO NA POSIÇÃO [CONTADOR] NA
-            //MEMÓRIA E ARMAZENARÁ NA VARIAVEL TRADUZIDO
+        traduzido = decoder(aux); //DECODER IRA DECOMPOR A INSTRUÇÃO
   
-            return traduzido; //retorna para o controller
+        return traduzido; //retorna para o controller
+    }
+    else{
+        
+    }
+    
 
 }
 
@@ -18,12 +22,12 @@ void imprimeMemInstruc(Memorias *memoriaInst, int tamLinhas){
             }
 }
 
-void escreveDado(Memorias **mem, int *contador, char *valor) {
-
-    if (*contador >= 0 && *contador < 256) {
-        strcpy((*mem)[*contador].dados, valor);
+void escreveDado(Memorias **mem, int *immediate, char *valor) { //ESCREVE O DADO DA POSICAO DE MEMORIA 128 -> 256
+    char sinal;
+    if (*immediate >= 0 && *immediate < 256) {
+        strcat((*mem)[*immediate + 256].dados, valor);
     } else {
-        fprintf(stderr, "Tentativa de escrita fora dos limites da memória no endereço %d\n", *contador);
+        fprintf(stderr, "Tentativa de escrita fora dos limites da memória no endereço %d\n", *immediate);
     }
 }
 
