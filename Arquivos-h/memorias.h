@@ -9,7 +9,7 @@
 #include "ULA.h"
 
 
-type_instruc Memoria(RegistradoresAux *aux, int sinal);
+type_instruc Memoria(RegistradoresAux *aux);
 void imprimeMemInstruc(Memorias *memoriaInst, int tamLinhas);
 void escreveDado(Memorias **mem, int *contador, char *valor);
 void imprimeDados(Memorias *md, int tamLinhas);

@@ -7,6 +7,9 @@
         "decode.h": "c",
         "menu.h": "c",
         "controller.h": "c",
-        "imprimeregsaux.h": "c"
+        "imprimeregsaux.h": "c",
+        "carregamemoriadados.h": "c",
+        "bibliotecas.h": "c",
+        "inicializaregsaux.h": "c"
     }
 }

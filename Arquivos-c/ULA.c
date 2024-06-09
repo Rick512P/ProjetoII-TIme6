@@ -1,9 +1,8 @@
 #include "../Arquivos-h/ULA.h"
 
 
-int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, int **regs) {
-  
-    int address, rs, rt, rd;
+int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **memoria, int **regs, RegistradoresAux *aux) {
+    int address, rd;
 
     if (strcmp((*instrucoesDecodificadas)[*contador].opcode, "0000") == 0 ) {
         char Target[9];
@@ -13,22 +12,21 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
         Dest[8] = '\0';
         Source[8] = '\0';
 
-        rs = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs);
-        rt = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
+        aux->registradorA = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs);
+        aux->registradorB = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
 
         if (strcmp((*instrucoesDecodificadas)[*contador].funct, "000") == 0 ){
-            rd = rs + rt;
+            rd = aux->registradorA + aux->registradorB;
             if (rd > 127 || rd < -128){
                 fprintf(stderr, "Overflow. Registrador RD com numero de bits maior que a capacidade suportada.\n");
             }
-            int local_decimal = rd;
 
             return rd; //RETORNA PARA O CONTROLLER O INTEIRO PARA O MESMO ARMAZENAR NO REGISTRADOR   
         }
 
         else if (strcmp((*instrucoesDecodificadas)[*contador].funct, "010") == 0 ){
             //"sub -> rs - rt = rd";
-            rd = rs - rt;
+            rd = aux->registradorA - aux->registradorB;
             if (rd > 127 || rd < -128){
                 fprintf(stderr, "Overflow. Registrador RD com numero de bits maior que a capacidade suportada.\n");
                 return -1;
@@ -39,8 +37,8 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
 
         else if (strcmp((*instrucoesDecodificadas)[*contador].funct, "100") == 0 ){
             //"and -> rs and rt = rd";
-            decimalToBinary(rt, Target);
-            decimalToBinary(rs, Source);
+            decimalToBinary(aux->registradorB, Target);
+            decimalToBinary(aux->registradorA, Source);
             AND(Source, Target, Dest);
             rd = bin_to_decimal(Dest);
             if (rd > 127 || rd < -128){
@@ -52,8 +50,8 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
 
         else if (strcmp((*instrucoesDecodificadas)[*contador].funct, "101") == 0 ){
             //"or -> rs or rt = rd";
-            decimalToBinary(rt, Target);
-            decimalToBinary(rs, Source);
+            decimalToBinary(aux->registradorB, Target);
+            decimalToBinary(aux->registradorA, Source);
             OR(Source, Target, Dest);
             rd = bin_to_decimal(Dest);
             if (rd > 127 || rd < -128){
@@ -65,13 +63,13 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
     }
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"0100") == 0){// addi -> rs + immediate = rt
-        int immediate, rs, rt;
+        int immediate;
         immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-        rs = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs);
-        if ((immediate + rs) > 127 || (immediate + rs) < -128){
+        aux->registradorA = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs);
+        if ((immediate + aux->registradorA) > 127 || (immediate + aux->registradorA) < -128){
                 fprintf(stderr, "Overflow. Registrador RD com numero de bits maior que a capacidade suportada.\n");
         }
-        return (immediate + rs); //RETORNA PARA O CONTROLLER O INTEIRO PARA O MESMO ARMAZENAR NO REGISTRADOR
+        return (immediate + aux->registradorA); //RETORNA PARA O CONTROLLER O INTEIRO PARA O MESMO ARMAZENAR NO REGISTRADOR
     }
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"1011") == 0){// lw GRAVA CONTEUDO DA MEMORIA NOS REGISTRADORES
@@ -79,30 +77,31 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **md, in
         int immediate, dados;
         immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
         //Agora sei qual a posicao Immediate em decimal:
-        dados = bin_to_decimal(md[immediate + 256]->dados);
+        strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
+        dados = bin_to_decimal(memoria[immediate]->dados);
         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
         return dados;
     }
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"1111") == 0){// sw GRAVA CONTEUDO NA MEMORIA DE DADOS
         //M[$rs + imm] = $rt
-        int immediate, conteudo;
+        int conteudo, imm;
         char conteudo_bin[17];
         conteudo_bin[16] = '\0';
-        conteudo = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
-        immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
+        aux->registradorB = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
+        imm = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
         if (conteudo > 127 || conteudo < -128){
             fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
             if (conteudo > 127)
                 strcpy(conteudo_bin, "0000000001111111"); //Escreve 32
             else
                 strcpy(conteudo_bin, "1111111110000001"); //Escreve -32
-            escreveDado(md, &immediate, conteudo_bin);
+            escreveDado(memoria, &imm, conteudo_bin);
             return -1;
         }
 
-        decimalToBinary(conteudo, conteudo_bin);
-        escreveDado(md, &immediate, conteudo_bin);
+        decimalToBinary(aux->registradorB, conteudo_bin);
+        escreveDado(memoria, &imm, conteudo_bin);
     }
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"0010") == 0){ // j -> jump to specified address

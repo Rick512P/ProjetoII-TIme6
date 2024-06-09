@@ -8,9 +8,9 @@ int main(){
 int menu(){
     Assembly *AssemblyInst;
     Memorias *memorias;
-    RegistradoresAux *aux = malloc(sizeof(RegistradoresAux));
+    RegistradoresAux *aux;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
-    int state = -1;
+    int state = -1, i = 0;
     type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*));
     char dat[300]; //Recebe o nome do arquivo.dat
     //int *regs; //registradores como um inteiro mesmo
@@ -44,7 +44,9 @@ int menu(){
         {
         case 0:
             free(memorias);
-            free(regs);
+            for(i=0;i<8;i++){
+                regs[i] = 0;
+            }
             free(AssemblyInst);
             free(instrucoesDecodificadas);
             system("clear");
@@ -115,12 +117,12 @@ int menu(){
 
         case 10: //Chamar função responsável pela execução do programa
             program_counter = 0;
-            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, aux);
+            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
         case 11: //Chamar função responsável pela execução do programa passo a passo
-            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, aux);
+            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
@@ -137,7 +139,7 @@ int menu(){
             if (cont == 1){
                 recarregarmd(&memorias, dat);
             }
-            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, aux);
+            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux);
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             

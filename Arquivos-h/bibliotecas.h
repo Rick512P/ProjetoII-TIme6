@@ -45,9 +45,9 @@ typedef struct{
 typedef struct {
   char registradorInst[17];
   char registradorDados[17];
-  char registradorA[4];
-  char registradorB[7];
-  int registradorResult;
+  int registradorA;
+  int registradorB;
+  int registradorULA;
 } RegistradoresAux;
 
 #endif

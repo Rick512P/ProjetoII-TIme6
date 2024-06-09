@@ -11,6 +11,7 @@
 #include "registradores.h"
 #include "ULA.h"
 #include "carregaMemoriaDados.h"
+#include "inicializaRegsAux.h"
 
 int main();
 int menu();

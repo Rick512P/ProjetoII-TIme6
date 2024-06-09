@@ -62,7 +62,7 @@ int parser(Memorias **memoriaInst, int *tamanho_linhas){
 
             i++;
             if(i == 255)
-                printf("\nOVERFLOW. Numero de instrucoes atingiu limite maximo na memoria\n");
+                printf("\nNumero de instrucoes atingiu limite maximo na memoria\n");
         }
         fclose(arq);
         printf("Arquivo lido com sucesso!");

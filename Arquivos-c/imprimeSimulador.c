@@ -1,9 +1,9 @@
 #include "../Arquivos-h/imprimeSimulador.h"
 
 
-void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoriaInst){
+void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoria){
     for(int i=0;i<tamLinhas;i++){
-            printf("\n\nInstrucao %d de %d: [%s]", i+1, tamLinhas, memoriaInst[i].instruc);
+            printf("\n\nInstrucao %d de %d: [%s]", i+1, tamLinhas, memoria[i].instruc);
             if (strcmp((*instrucoesDecodificadas)[i].opcode, "0000") == 0){
                 printf("\n======TIPO R=========\n");
                 printf("opcode[%s]\t", (*instrucoesDecodificadas)[i].opcode);
@@ -35,32 +35,32 @@ void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Mem
 }
 
 
-void imprimeEstatisticas(Memorias *memoriaInst, int tamLinhas, type_instruc **instrucoesDecodificadas){
-    if (memoriaInst == NULL) {
+void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instrucoesDecodificadas){
+    if (memoria == NULL) {
                 fprintf(stderr, "Falha ao obter instruções.\n");
             }
     int r=0, i=0, j=0, instAri=0, instLogic=0, instDesvio=0, instAcessoMem=0;
     for(int y=0;y<tamLinhas;y++){
-        if (strncmp(memoriaInst[y].instruc, "0000", 4) == 0){ //compara os 4 primeiros numeros de memoriaInst com "0000"
+        if (strncmp(memoria[y].instruc, "0000", 4) == 0){ //compara os 4 primeiros numeros de memoria com "0000"
             r++;
             if ((strcmp((*instrucoesDecodificadas)[y].funct, "000")) || (strcmp((*instrucoesDecodificadas)[y].funct, "010") == 0))
                 instAri++;
             else
                 instLogic++;
         }
-        else if (strncmp(memoriaInst[y].instruc, "0100", 4) == 0 || strncmp(memoriaInst[y].instruc, "1011", 4) == 0 || strncmp(memoriaInst[y].instruc, "1111", 4) == 0 || strncmp(memoriaInst[y].instruc, "0110", 4) == 0 || strncmp(memoriaInst[y].instruc, "1000", 4) == 0){
+        else if (strncmp(memoria[y].instruc, "0100", 4) == 0 || strncmp(memoria[y].instruc, "1011", 4) == 0 || strncmp(memoria[y].instruc, "1111", 4) == 0 || strncmp(memoria[y].instruc, "0110", 4) == 0 || strncmp(memoria[y].instruc, "1000", 4) == 0){
             i++;
-            if (strncmp(memoriaInst[y].instruc, "0100", 4) == 0)
+            if (strncmp(memoria[y].instruc, "0100", 4) == 0)
                 instAri++;
-            else if ((strncmp(memoriaInst[y].instruc, "1011", 4) == 0) || strncmp(memoriaInst[y].instruc, "1111", 4) == 0)
+            else if ((strncmp(memoria[y].instruc, "1011", 4) == 0) || strncmp(memoria[y].instruc, "1111", 4) == 0)
                 instAcessoMem++;
-            else if (strncmp(memoriaInst[y].instruc, "1000", 4) == 0)
+            else if (strncmp(memoria[y].instruc, "1000", 4) == 0)
                 instDesvio++;
 
 
 
         }  
-        else if (strncmp(memoriaInst[y].instruc, "0010", 4) == 0){
+        else if (strncmp(memoria[y].instruc, "0010", 4) == 0){
             j++;
             instDesvio++;
         }
