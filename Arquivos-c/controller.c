@@ -55,23 +55,14 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
             }
             
             //Etapa 4
-            if ((*sinal)->tipo == 0 || (*sinal)->tipo == 3 || (*sinal)->tipo == 4)
-            {
-                // para lw fazer a leitura do dado
-                /*
-                int immediate, dados;
-                immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-                //Agora sei qual a posicao Immediate em decimal:
-                strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
-                dados = bin_to_decimal(memoria[immediate]->dados);
-                //Agora sei qual o valor contido na posição 4 da memoria em decimal:
-                return dados;
-                */
-                
-                //para SW escrever na memória o valor
-                /*
-                    // Para escrever valor recebido de retornoRegs(regs, (*sinal)->RT); no endereço dado por SW que está salvo em (*aux)->registradorULA
-                    // deve ser feito no Etapa 4
+            if ((*sinal)->tipo == 0 || (*sinal)->tipo == 3 || (*sinal)->tipo == 4){
+                if ((*sinal)->tipo == 3) {
+                    // para lw fazer a leitura do dado
+                    int immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
+                    strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
+                    //dados serão transferidos na próxima etapa (etapa 5)
+                } else if ((*sinal)->tipo == 4) {
+                    //para SW escrever na memória o valor
                     int conteudo = retornoRegs(regs, (*sinal)->RT);
                     char conteudo_bin[9];
                     conteudo_bin[8]='\0';
@@ -79,27 +70,27 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                     if (conteudo > 127 || conteudo < -128){
                         fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
                         if (conteudo > 127)
-                            strcpy(conteudo_bin, "01111111"); //Escreve 32
+                            strcpy(conteudo_bin, "01111111"); //Escreve 127
                         else
-                            strcpy(conteudo_bin, "10000001"); //Escreve -32
-                        escreveDado(memoria, &imm, conteudo_bin);
+                            strcpy(conteudo_bin, "10000000"); //Escreve -128
+                        escreveDado(memoria, &immediate, conteudo_bin);
                         return -1;
                     }
-                    decimalToBinary(aux->registradorB, conteudo_bin);
-                    escreveDado(memoria, &imm, conteudo_bin);
-                    */
-                
-                // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RD); // para tipo R
-                // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT); // para addi
+                    decimalToBinary(conteudo, conteudo_bin);
+                    escreveDado(memoria, &immediate, conteudo_bin);
+                } else if ((*sinal)->tipo == 0) {
+                    // escrita nos registradores para instruções do tipo R
+                    escritaRegistradores(regs, aux->registradorULA, (*sinal)->RD); // para tipo R
+                }
             }
 
             //Etapa 5
-
-            if ((*sinal)->tipo == 3)
-            {
-                // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT); 
+            if ((*sinal)->tipo == 3) {
+                // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT);
+                int rt = (*sinal)->RT;
+                escritaRegistradores(regs, aux->registradorDados, rt); // Load: Reg[IR[20:16]] <= MDR
             }
-        
+            
             (*StateForBack)++;  
             imprimeRegsAux(aux);       
         }        
@@ -171,70 +162,74 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                   
         if (ProxEtapa == 4) // Etapa 4 -> Escreve em Regs para tipo R e Addi, Escreve em Memoria para SW, Lê Valor de Memória para LW
             {
-                if ((*sinal)->tipo == 3)
+                if ((*sinal)->tipo == 3) // lw (load word)
                 {
-                    // para lw fazer a leitura do dado
-                    /*
-                        int immediate, dados;
-                        immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-                        //Agora sei qual a posicao Immediate em decimal:
+                    // Carregar dado da memória
+                        int immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
                         strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
-                        dados = bin_to_decimal(memoria[immediate]->dados);
                         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
-                        (*aux)->registradorULA = dados;
                         
                         imprimeRegsAux(aux);       
                         (*StateForBack)++;  
                         return ProxEtapa++;
-                    */
                 }
-                else if ((*sinal)->tipo == 4)
+                else if ((*sinal)->tipo == 4) // sw (store word)
                 {
-                    //para SW escrever na memória o valor
-                    /*
-                        // Para escrever valor recebido de retornoRegs(regs, (*sinal)->RT); no endereço dado por SW que está salvo em (*aux)->registradorULA
-                        // deve ser feito no Etapa 4
-                        int conteudo = retornoRegs(regs, (*sinal)->RT);
-                        char conteudo_bin[9];
-                        conteudo_bin[8]='\0';
+                    // Armazenar dado na memória
+                    int immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm;
+                    int conteudo = retornoRegs(regs, (*sinal)->RT);
+                    char conteudo_bin[9];
+                    conteudo_bin[8]='\0';
 
-                        if (conteudo > 127 || conteudo < -128){
-                            fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
-                            if (conteudo > 127)
-                                strcpy(conteudo_bin, "01111111"); //Escreve 32
-                            else
-                                strcpy(conteudo_bin, "10000001"); //Escreve -32
-                            escreveDado(memoria, &imm, conteudo_bin);
-                            return -1;
+                    if (conteudo > 127 || conteudo < -128){
+                        fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
+                        if (conteudo > 127)
+                             strcpy(conteudo_bin, "01111111"); //Escreve 127
+                         else
+                             strcpy(conteudo_bin, "10000000"); //Escreve -128
+                         escreveDado(memoria, &immediate, conteudo_bin);
+                         return -1;
                         }
-                        decimalToBinary(aux->registradorB, conteudo_bin);
-                        escreveDado(memoria, &imm, conteudo_bin);
-                    */
+                        decimalToBinary(conteudo, conteudo_bin);
+                        escreveDado(memoria, &immediate, conteudo_bin);
+
+                        imprimeRegsAux(aux);
+                        (*StateForBack)++;
+                        return ProxEtapa++;
                 }
-                else if ((*sinal)->tipo == 0)
+                else if ((*sinal)->tipo == 0) // R-type
                 {
                     // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RD); // para tipo R
+                    escritaRegistradores(regs, aux->registradorULA, (*sinal)->RD);
+
+                    imprimeRegsAux(aux);
+                    (*StateForBack)++;
+                    return ProxEtapa++;
                 }
-                else if ((*sinal)->tipo == 2)
+                else if ((*sinal)->tipo == 2) // addi
                 {
                     // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT); // para addi
+                    escritaRegistradores(regs, aux->registradorULA, (*sinal)->RT);
+
+                    imprimeRegsAux(aux);
+                    (*StateForBack)++;
+                    return ProxEtapa++;
                 }
-
-                imprimeRegsAux(aux);       
-                (*StateForBack)++;  
-                return ProxEtapa++;
             }
 
-            if (ProxEtapa) //Etapa 5 -> Escreve EM Regs para LW
+            if (ProxEtapa == 5) //Etapa 5 -> Escreve EM Regs para LW
             {
-                // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT); 
-                imprimeRegsAux(aux);       
-                (*StateForBack)++;  
-                return 1;
+                if ((*sinal)->tipo == 3){ // lw (load word)
+                    int rt = (*sinal)->RT;
+                    escritaRegistradores(regs, aux->registradorDados, rt); // Load: Reg[IR[20:16]] <= MDR
+                
+                    imprimeRegsAux(aux);       
+                    (*StateForBack)++;  
+                    return 1;
+                }
+                break;
             }
-        break;
-    }
-}
+        }
 
 void backstep(int *StateForBack, Memorias **memoriaInst, int NumeroLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal){
     *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
