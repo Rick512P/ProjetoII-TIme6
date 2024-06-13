@@ -74,34 +74,22 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **memori
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"1011") == 0){// lw GRAVA CONTEUDO DA MEMORIA NOS REGISTRADORES
         //$rt = M[$rs + imm]
-        int immediate, dados;
-        immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-        //Agora sei qual a posicao Immediate em decimal:
-        strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
-        dados = bin_to_decimal(memoria[immediate]->dados);
-        //Agora sei qual o valor contido na posição 4 da memoria em decimal:
-        return dados;
+        int endereco, imm;
+        
+        //calculando o endereço de escrita
+        endereco = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs) + bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
+
+        return(endereco);//retornando o endereço
     }
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"1111") == 0){// sw GRAVA CONTEUDO NA MEMORIA DE DADOS
         //M[$rs + imm] = $rt
-        int conteudo, imm;
-        char conteudo_bin[9];
-        conteudo_bin[8] = '\0';
-        aux->registradorB = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
-        imm = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-        if (conteudo > 127 || conteudo < -128){
-            fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
-            if (conteudo > 127)
-                strcpy(conteudo_bin, "01111111"); //Escreve 32
-            else
-                strcpy(conteudo_bin, "10000001"); //Escreve -32
-            escreveDado(memoria, &imm, conteudo_bin);
-            return -1;
-        }
+        int endereco, imm;
+        
+        //calculando o endereço de escrita
+        endereco = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs) + bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
 
-        decimalToBinary(aux->registradorB, conteudo_bin);
-        escreveDado(memoria, &imm, conteudo_bin);
+        return(endereco);//retornando o endereço
     }
 
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"0010") == 0){ // j -> jump to specified address
