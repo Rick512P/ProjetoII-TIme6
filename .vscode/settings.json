@@ -10,6 +10,8 @@
         "imprimeregsaux.h": "c",
         "carregamemoriadados.h": "c",
         "bibliotecas.h": "c",
-        "inicializaregsaux.h": "c"
+        "inicializaregsaux.h": "c",
+        "sinais.h": "c",
+        "stdlib.h": "c"
     }
 }

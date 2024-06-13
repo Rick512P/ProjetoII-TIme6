@@ -1,7 +1,7 @@
 
 #include "../Arquivos-h/controller.h"
 
-int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux){
+int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal){
     int jump, RD, RT, i, a=0;
 
     /*for(int j=0;j<tamLinhas;j++){
@@ -9,17 +9,18 @@ int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **
         (*instrucoesDecodificadas)[j] = memInstruc(aux);
     }*/
     
+
     switch (op)
     {
     case 1:
 
         for ((*program_counter) = 0; (*program_counter) < tamLinhas; increment_PC(program_counter, 1))
         {   
-
+            
             *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
             strcpy((*aux)->registradorInst, memoriaInst[*program_counter]->instruc);
             (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); //DECODIFICA A INSTRUCAO
-
+            *sinal = AddSinais(instrucoesDecodificadas[*program_counter]);
 
             if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"0000")) == 0) // ADD/SUB/OR/AND
             {
@@ -49,7 +50,8 @@ int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **
                 a++;
                 printf("%d jump/loop concluido.\t\t", a);
             }
-            (*state)++;            
+            (*state)++;  
+            imprimeRegsAux(aux);        
         }
         break;
 
@@ -61,6 +63,7 @@ int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **
 
             strcpy((*aux)->registradorInst, memoriaInst[*program_counter]->instruc);
             (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux);
+            *sinal = AddSinais(instrucoesDecodificadas[*program_counter]);
             
             if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"0000")) == 0)
             {
@@ -96,14 +99,16 @@ int controller(int op, int *state, Memorias **memoriaInst, int tamLinhas, int **
             (*state)++;
             printf("Valor de state APOS STEP: %d", *state);
             increment_PC(program_counter, 1);
+            imprimeRegsAux(aux); 
         break;
     }
 
     return 0;
 }
 
-void backstep(int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux){
+void backstep(int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal){
     *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
+
     int jump, RD, RT, i, a=0;
     for (i = 0; i<8; i++){
         (*regs)[i]=0;
@@ -113,6 +118,7 @@ void backstep(int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Mem
 
         strcpy((*aux)->registradorInst, memoriaInst[*program_counter]->instruc);
         (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); 
+        *sinal = AddSinais(instrucoesDecodificadas[*program_counter]);
 
         if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"0000")) == 0) // ADD/SUB/OR/AND
         {
@@ -142,5 +148,6 @@ void backstep(int *state, Memorias **memoriaInst, int tamLinhas, int **regs, Mem
         }       
     }
     (*state)--;
+    imprimeRegsAux(aux); 
     printf("Valor de state APOS BACK: %d\n", *state);
 }

@@ -86,16 +86,16 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **memori
     else if(strcmp((*instrucoesDecodificadas)[*contador].opcode,"1111") == 0){// sw GRAVA CONTEUDO NA MEMORIA DE DADOS
         //M[$rs + imm] = $rt
         int conteudo, imm;
-        char conteudo_bin[17];
-        conteudo_bin[16] = '\0';
+        char conteudo_bin[9];
+        conteudo_bin[8] = '\0';
         aux->registradorB = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rt);
         imm = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
         if (conteudo > 127 || conteudo < -128){
             fprintf(stderr, "OVERFLOW. Numero a ser escrito na memoria de dados ultrapassa os 8 bits.\n");
             if (conteudo > 127)
-                strcpy(conteudo_bin, "0000000001111111"); //Escreve 32
+                strcpy(conteudo_bin, "01111111"); //Escreve 32
             else
-                strcpy(conteudo_bin, "1111111110000001"); //Escreve -32
+                strcpy(conteudo_bin, "10000001"); //Escreve -32
             escreveDado(memoria, &imm, conteudo_bin);
             return -1;
         }

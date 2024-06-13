@@ -10,4 +10,12 @@ RegistradoresAux *inicializaRegsAux(){
     return RegsAux;
 }
 
+void imprimeRegsAux(RegistradoresAux *aux){
+    printf("\nRegistrador de Instrucao: %s", aux->registradorInst);
+    printf("\nRegistrador de Dados da Memoria: %s", aux->registradorDados);
+    printf("\nRegistrador A: %d", aux->registradorA);
+    printf("\nRegistrador B: %d", aux->registradorB);
+    printf("\nRegistrador ULA saida: %d", aux->registradorULA);
+}
+
 

@@ -12,6 +12,7 @@
 #include "ULA.h"
 #include "carregaMemoriaDados.h"
 #include "inicializaRegsAux.h"
+#include "sinais.h"
 
 int main();
 int menu();

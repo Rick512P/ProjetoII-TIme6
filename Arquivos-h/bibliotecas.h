@@ -7,6 +7,17 @@
 #include <string.h>
 
 //intrucao traduzida
+
+typedef struct{
+  int tipo;
+  int RS;
+  int RT;
+  int RD;
+  int funct;
+  int imm;
+  int address;
+}Sinais;
+
 typedef struct{
     char opcode[5];
 
@@ -31,7 +42,7 @@ typedef struct{
 
 //Memoria de dados e instrucoes unidas
 typedef struct {
-    char dados[17];
+    char dados[9];
     char instruc[17];
 } Memorias;
 
@@ -44,7 +55,7 @@ typedef struct{
 
 typedef struct {
   char registradorInst[17];
-  char registradorDados[17];
+  char registradorDados[9];
   int registradorA;
   int registradorB;
   int registradorULA;

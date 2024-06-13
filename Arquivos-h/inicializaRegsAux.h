@@ -1,5 +1,5 @@
-#ifndef __imprimeRegsAux_h
-#define __imprimeRegsAux_h
+#ifndef __RegsAux_h
+#define __RegsAux_h
 
 #include "decode.h"
 #include "memorias.h"
@@ -8,4 +8,5 @@
 #include "menu.h"
 
 RegistradoresAux *inicializaRegsAux();
+void imprimeRegsAux(RegistradoresAux *aux);
 #endif

@@ -9,6 +9,7 @@ int menu(){
     Assembly *AssemblyInst;
     Memorias *memorias;
     RegistradoresAux *aux;
+    Sinais *sinal = NULL;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
     int state = -1, i = 0;
     type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*));
@@ -66,6 +67,7 @@ int menu(){
                 fprintf(stderr, "Falha ao alocar memória para instrucoes assembly.\n");
                 return -1;
             }
+            sinal = inicializaSinais();
             break;
 
         case 2: //Carregar Memória de Dados
@@ -117,12 +119,12 @@ int menu(){
 
         case 10: //Chamar função responsável pela execução do programa
             program_counter = 0;
-            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux);
+            controller(1, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
         case 11: //Chamar função responsável pela execução do programa passo a passo
-            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux);
+            controller(2, &state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
@@ -139,7 +141,7 @@ int menu(){
             if (cont == 1){
                 recarregarmd(&memorias, dat);
             }
-            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux);
+            backstep(&state, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             
