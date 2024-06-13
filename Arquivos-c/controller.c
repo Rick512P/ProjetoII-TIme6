@@ -2,7 +2,7 @@
 #include "../Arquivos-h/controller.h"
 
 int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal, int ProxEtapa){
-    int jump, RD, RT, i, a=0, *PC, verifica_fim = 0;
+    int jump, RD, RT, i, a=0, *PC, verifica_fim = 0, immediate;
 
     /*for(int j=0;j<NumeroLinhas;j++){
         strcpy(aux->registradorInst, memoriaInst[j]->instruc);
@@ -58,8 +58,8 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
             if ((*sinal)->tipo == 0 || (*sinal)->tipo == 3 || (*sinal)->tipo == 4){
                 if ((*sinal)->tipo == 3) {
                     // para lw fazer a leitura do dado
-                    int immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-                    strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
+                    immediate = bin_to_decimal((*sinal)->imm);
+                    strcpy((*aux)->registradorDados, *md[immediate]->dados); //copio para o registrador de dados, o dado da memoria
                     //dados serão transferidos na próxima etapa (etapa 5)
                 } else if ((*sinal)->tipo == 4) {
                     //para SW escrever na memória o valor
@@ -73,14 +73,14 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                             strcpy(conteudo_bin, "01111111"); //Escreve 127
                         else
                             strcpy(conteudo_bin, "10000000"); //Escreve -128
-                        escreveDado(memoria, &immediate, conteudo_bin);
+                        escreveDado(*md, immediate, conteudo_bin);
                         return -1;
                     }
                     decimalToBinary(conteudo, conteudo_bin);
-                    escreveDado(memoria, &immediate, conteudo_bin);
+                    escreveDado(*md, &immediate, conteudo_bin);
                 } else if ((*sinal)->tipo == 0) {
                     // escrita nos registradores para instruções do tipo R
-                    escritaRegistradores(regs, aux->registradorULA, (*sinal)->RD); // para tipo R
+                    escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RD); // para tipo R
                 }
             }
 
@@ -88,7 +88,7 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
             if ((*sinal)->tipo == 3) {
                 // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT);
                 int rt = (*sinal)->RT;
-                escritaRegistradores(regs, aux->registradorDados, rt); // Load: Reg[IR[20:16]] <= MDR
+                escritaRegistradores(regs, (*aux)->registradorDados, rt); // Load: Reg[IR[20:16]] <= MDR
             }
             
             (*StateForBack)++;  
@@ -165,8 +165,8 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                 if ((*sinal)->tipo == 3) // lw (load word)
                 {
                     // Carregar dado da memória
-                        int immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
-                        strcpy(aux->registradorDados, memoria[immediate]->dados); //copio para o registrador de dados, o dado da memoria
+                        int immediate = bin_to_decimal((*sinal)->imm);
+                        strcpy((*aux)->registradorDados, *md[immediate]->dados); //copio para o registrador de dados, o dado da memoria
                         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                         
                         imprimeRegsAux(aux);       
@@ -176,7 +176,7 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                 else if ((*sinal)->tipo == 4) // sw (store word)
                 {
                     // Armazenar dado na memória
-                    int immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm;
+                    int immediate = bin_to_decimal((*sinal)->imm);
                     int conteudo = retornoRegs(regs, (*sinal)->RT);
                     char conteudo_bin[9];
                     conteudo_bin[8]='\0';
@@ -187,11 +187,11 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                              strcpy(conteudo_bin, "01111111"); //Escreve 127
                          else
                              strcpy(conteudo_bin, "10000000"); //Escreve -128
-                         escreveDado(memoria, &immediate, conteudo_bin);
+                            escreveDado(md, &immediate, conteudo_bin);
                          return -1;
                         }
                         decimalToBinary(conteudo, conteudo_bin);
-                        escreveDado(memoria, &immediate, conteudo_bin);
+                        escreveDado(md, &immediate, conteudo_bin);
 
                         imprimeRegsAux(aux);
                         (*StateForBack)++;
@@ -200,7 +200,7 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                 else if ((*sinal)->tipo == 0) // R-type
                 {
                     // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RD); // para tipo R
-                    escritaRegistradores(regs, aux->registradorULA, (*sinal)->RD);
+                    escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RD);
 
                     imprimeRegsAux(aux);
                     (*StateForBack)++;
@@ -209,7 +209,7 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                 else if ((*sinal)->tipo == 2) // addi
                 {
                     // escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT); // para addi
-                    escritaRegistradores(regs, aux->registradorULA, (*sinal)->RT);
+                    escritaRegistradores(regs, (*aux)->registradorULA, (*sinal)->RT);
 
                     imprimeRegsAux(aux);
                     (*StateForBack)++;
@@ -221,7 +221,7 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
             {
                 if ((*sinal)->tipo == 3){ // lw (load word)
                     int rt = (*sinal)->RT;
-                    escritaRegistradores(regs, aux->registradorDados, rt); // Load: Reg[IR[20:16]] <= MDR
+                    escritaRegistradores(regs, (*aux)->registradorDados, rt); // Load: Reg[IR[20:16]] <= MDR
                 
                     imprimeRegsAux(aux);       
                     (*StateForBack)++;  
@@ -230,8 +230,10 @@ int controller(int op, int *StateForBack, Memorias **memoriaInst, int NumeroLinh
                 break;
             }
         }
+}
 
-void backstep(int *StateForBack, Memorias **memoriaInst, int NumeroLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal){
+int controller(int op, int *StateForBack, Memorias **memoriaInst, int tamLinhas, int **regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal, int ProxEtapa)
+{
     *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
 
     int jump, RD, RT, i, a=0;
@@ -240,39 +242,9 @@ void backstep(int *StateForBack, Memorias **memoriaInst, int NumeroLinhas, int *
     }
 
     for (*program_counter = 0; *program_counter < (*StateForBack - 1); increment_PC(program_counter, 1)){
-
-        strcpy((*aux)->registradorInst, memoriaInst[*program_counter]->instruc);
-        (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); 
-        *sinal = AddSinais(instrucoesDecodificadas[*program_counter]);
-
-        if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"0000")) == 0) // ADD/SUB/OR/AND
-        {
-            (*aux)->registradorULA = ULA(instrucoesDecodificadas, program_counter, md, regs, *aux);
-            escritaRegistradores(regs, (*aux)->registradorULA, instrucoesDecodificadas[*program_counter]->rd);
-        }
-        else if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"0100")) == 0){ //ADDI
-            (*aux)->registradorULA = ULA(instrucoesDecodificadas, program_counter, md, regs, *aux); 
-            escritaRegistradores(regs, (*aux)->registradorULA, instrucoesDecodificadas[*program_counter]->rt);
-        }
-        else if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"1011")) == 0){  //LW
-            (*aux)->registradorULA = ULA(instrucoesDecodificadas, program_counter, md, regs, *aux);
-            escritaRegistradores(regs, (*aux)->registradorULA, instrucoesDecodificadas[*program_counter]->rt);
-        }
-        else if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"1111")) == 0){ //SW
-            ULA(instrucoesDecodificadas, program_counter, md, regs, *aux); 
-        }
-        else if (strcmp(instrucoesDecodificadas[*program_counter]->opcode,"1000") == 0) //BEQ
-        {
-            (*program_counter) = ULA(instrucoesDecodificadas, program_counter, md, regs, *aux);
-        }            
-        else if ((strcmp(instrucoesDecodificadas[*program_counter]->opcode,"0010")) == 0){ //JUMP
-            jump = ULA(instrucoesDecodificadas, program_counter, md, regs, *aux);
-            (*program_counter) = jump;
-            a++;
-            printf("%d jump/loop concluido.\t\t", a);
-        }       
+        //A fazer
     }
+
     (*StateForBack)--;
-    imprimeRegsAux(aux); 
-    printf("Valor de StateForBack APOS BACK: %d\n", *StateForBack);
+    imprimeRegsAux(aux);
 }
