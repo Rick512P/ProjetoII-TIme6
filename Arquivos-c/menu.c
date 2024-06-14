@@ -119,12 +119,12 @@ int menu(){
 
         case 10: //Chamar função responsável pela execução do programa
             program_counter = 0;
-            controller(1, &StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, estado);
+            controller(1, &StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
         case 11: //Chamar função responsável pela execução do programa passo a passo
-            Etapa = controller(2, &StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, estado);
+            Etapa = controller(2, &StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
             puts(AssemblyInst[program_counter-1].InstructsAssembly);

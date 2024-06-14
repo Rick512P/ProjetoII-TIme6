@@ -17,11 +17,11 @@ void imprimeMemInstruc(Memorias *memoriaInst, int tamLinhas){
             }
 }
 
-void escreveDado(Memorias **mem, int *immediate, char *valor) { //ESCREVE O DADO DA POSICAO DE MEMORIA 128 -> 256
-    if (*immediate >= 0 && *immediate < 256) {
-        strcat((*mem)[*immediate].dados, valor);
+void escreveDado(Memorias **mem, int immediate, char *valor) { //ESCREVE O DADO DA POSICAO DE MEMORIA 128 -> 256
+    if (immediate >= 0 && immediate < 256) {
+        strcat((*mem)[immediate].dados, valor);
     } else {
-        fprintf(stderr, "Tentativa de escrita fora dos limites da memória no endereço %d\n", *immediate);
+        fprintf(stderr, "Tentativa de escrita fora dos limites da memória no endereço %d\n", immediate);
     }
 }
 
