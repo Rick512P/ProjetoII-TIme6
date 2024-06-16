@@ -10,5 +10,6 @@
 
 void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoria);
 void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instrucoesDecodificadas);
+void imprimeRegsAux(RegistradoresAux *aux);
 
 #endif

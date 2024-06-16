@@ -7,7 +7,7 @@ int main(){
 
 int menu(){
     Assembly *AssemblyInst;
-    Memorias *memorias;
+    Memorias *memorias = NULL;
     RegistradoresAux *aux;
     Sinais *sinal = NULL;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
@@ -55,6 +55,7 @@ int menu(){
             break;
             
         case 1: //Carregar memória de Instruções
+            memorias = inicializaMem();
             parser(&memorias, &tamLinhas);
             *instrucoesDecodificadas = malloc(tamLinhas * sizeof(type_instruc));
             if (*instrucoesDecodificadas == NULL) {
@@ -71,8 +72,11 @@ int menu(){
             break;
 
         case 2: //Carregar Memória de Dados
+            if(memorias == NULL){
+                memorias = inicializaMem();
+            }
             if (program_counter == 0){
-                strcpy(dat,carregamd(&memorias));
+                strcpy(dat,carregaDados(&memorias));
                 printf("\n");
                 puts(dat);
                 printf("\n");
@@ -85,8 +89,7 @@ int menu(){
             break;
 
         case 3: //Imprimir memória de instruções e memória de dados
-            imprimeMemInstruc(memorias, tamLinhas);
-            imprimeDados(memorias, tamLinhas);
+            imprimeMemoria(memorias);
             break;
 
         case 4: //Imprimir registradores
@@ -104,12 +107,16 @@ int menu(){
         case 7: //imprimir todo o simulador
             imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas);
             imprimeSimulador(tamLinhas, instrucoesDecodificadas, memorias);      
-            imprimeDados(memorias, tamLinhas);
+            imprimeMemoria(memorias);
             imprimirASM(AssemblyInst, tamLinhas);
             imprimeRegistradores(regs);
             break;
 
         case 8: //salvar arquivo .asm (com as instruções traduzidas para a linguagem intermediária Assembly)
+            if(memorias == NULL){
+                printf("Instrucoes nao carregadas");
+                break;
+            }
             SaveASM(AssemblyInst, tamLinhas);
             break;
 
@@ -118,19 +125,31 @@ int menu(){
             break;
 
         case 10: //Chamar função responsável pela execução do programa
+            if(memorias == NULL){
+                printf("Instrucoes nao carregadas");
+                break;
+            }
             program_counter = 0;
-            controller(1, &StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
+            controller(1, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
         case 11: //Chamar função responsável pela execução do programa passo a passo
-            Etapa = controller(2, &StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
+            if(memorias == NULL){
+                printf("Instrucoes nao carregadas");
+                break;
+            }
+            Etapa = controller(2, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
             break;
 
         case 12: //Chamar função responsável por retornar uma instrução (PC--)
+            if(memorias == NULL){
+                printf("Instrucoes nao carregadas");
+                break;
+            }
             if (StateForBack <= 0){
                 fprintf(stderr, "Usuario ja esta no inicio do programa.");
                 StateForBack = -1;
@@ -138,10 +157,7 @@ int menu(){
             }
             memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de md
 
-            if (cont == 1){
-                recarregarmd(&memorias, dat);
-            }
-            backstep(&StateForBack, &memorias, tamLinhas, &regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
+            backstep(&StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             

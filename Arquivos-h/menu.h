@@ -3,16 +3,17 @@
 
 #include "Assembly.h"
 #include "bibliotecas.h"
+#include "carregaDados.h"
 #include "controller.h"
 #include "decode.h"
+#include "inicializadores.h"
+#include "imprimeSimulador.h"
 #include "memorias.h"
 #include "parser.h"
 #include "PC.h"
 #include "registradores.h"
-#include "ULA.h"
-#include "carregaMemoriaDados.h"
-#include "inicializaRegsAux.h"
 #include "sinais.h"
+#include "ULA.h"
 
 int main();
 int menu();

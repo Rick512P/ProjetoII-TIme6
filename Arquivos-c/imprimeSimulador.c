@@ -70,3 +70,12 @@ void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instru
     printf("Observa-se: \n%d instrucoes do tipo R\n%d instrucoes do tipo I\n%d instrucoes do tipo J\n", r,i,j);
     printf("Onde %d instrucoes sao da classe Logica, %d Aritmetica, %d Desvio e %d Acesso a Memoria de Dados\n", instLogic, instAri, instDesvio, instAcessoMem);
 }
+
+
+void imprimeRegsAux(RegistradoresAux *aux){
+    printf("\nRegistrador de Instrucao: %s", aux->registradorInst);
+    printf("\nRegistrador de Dados da Memoria: %s", aux->registradorDados);
+    printf("\nRegistrador A: %d", aux->registradorA);
+    printf("\nRegistrador B: %d", aux->registradorB);
+    printf("\nRegistrador ULA saida: %d", aux->registradorULA);
+}

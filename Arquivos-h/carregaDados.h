@@ -4,7 +4,8 @@
 #include "bibliotecas.h"
 #include "menu.h"
 
-char* carregamd(Memorias **memoria);
+void remove_newline(char *line);
+char* carregaDados(Memorias **memoria);
 void escreverArquivoMemoria(Memorias *memoria);
 
 #endif

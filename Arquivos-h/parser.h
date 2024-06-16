@@ -4,11 +4,11 @@
 
 #include "bibliotecas.h"
 #include "memorias.h"
+#include "carregaDados.h"
 
 
 
-
-int parser(Memorias **memoriaInst, int *tamanho_linhas);
+int parser(Memorias **memoria, int *tamanho_linhas);
 
 
 #endif

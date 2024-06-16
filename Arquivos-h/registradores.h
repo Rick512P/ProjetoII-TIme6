@@ -8,8 +8,8 @@
 #include "bin_to_decimal.h"
 
 
-int escritaRegistradores(int **regs, int valor, char posicao[]);
-int retornoRegs(int **regs, char posicao[]);
+int escritaRegistradores(int *regs, int valor, char posicao[]);
+int retornoRegs(int *regs, char posicao[]);
 void imprimeRegistradores(int *regs);
 
 #endif

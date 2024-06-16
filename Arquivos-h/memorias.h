@@ -10,9 +10,8 @@
 
 
 type_instruc Memoria(RegistradoresAux *aux);
-void imprimeMemInstruc(Memorias *memoriaInst, int tamLinhas);
+void imprimeMemoria(Memorias *md);
 void escreveDado(Memorias **mem, int contador, char *valor);
-void imprimeDados(Memorias *md, int tamLinhas);
 void escreverArquivoMemoria(Memorias *md);
 
 

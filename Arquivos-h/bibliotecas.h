@@ -44,6 +44,7 @@ typedef struct{
 typedef struct {
     char dados[17];
     char instruc[17];
+    char uso; //i -> endereço usado para instrucao || d -> endereço usado para dados
 } Memorias;
 
 
@@ -55,7 +56,7 @@ typedef struct{
 
 typedef struct {
   char registradorInst[17];
-  char registradorDados[9];
+  char registradorDados[17];
   int registradorA;
   int registradorB;
   int registradorULA;
