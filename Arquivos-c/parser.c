@@ -4,7 +4,6 @@
 int parser(Memorias **memoria, int *tamanho_linhas){
     char linha[100], nome_arquivo[200];
     int contador_de_linhas = 0, opcao;
-    Memorias p;
     FILE *arq;
     printf("Digite 1 para utilizar o diretorio padrao ou 2 para entrar com o diretorio do arquivo: ");
     scanf("%d", &opcao);
@@ -30,9 +29,7 @@ int parser(Memorias **memoria, int *tamanho_linhas){
             }
             contador_de_linhas++;
         }
-
         
-
         *tamanho_linhas = contador_de_linhas;
 
         //alocaçao de memoria que minha variavel memoria terá será = ao tanto de linhas do arquivo lido
@@ -52,57 +49,30 @@ int parser(Memorias **memoria, int *tamanho_linhas){
             if (fgets(linha, sizeof(linha), arq) == NULL){
                 remove_newline(linha);
                 break;
-            }
-            
+            }        
 
             if(linha[0] == '\n'){
                 i++;
             }
             // Copia a linha para a estrutura memoria
 
-            else if((*memoria)[i].uso == '\0'){ //se o uso for terminador nulo, entao esta diponivel
-                strncpy((*memoria)[i].instruc, linha, 17);
-                (*memoria)[i].instruc[sizeof((*memoria)[i].instruc) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-                (*memoria)[i].uso = 'i';
-            }
-            else{
-                int posicao = -1, original;
-                original = i;
-                while((*memoria)[i].uso != '\0'){
-                    fprintf(stderr, "Tentativa de escrita em endereço ja utilizado por uma instrucao/dado.\n");
-                    i++;
-                    if ((*memoria)[i].uso == '\0'){
-                        posicao = i;
-                        break;
-                    }
-                }
-                if(posicao == -1){
-                    fprintf(stderr, "Espaco nao encontrado na memoria.\n");
-                    return 0;
-                }
-                strncpy((*memoria)[i].instruc, linha, 17);
-                (*memoria)[i].instruc[sizeof((*memoria)[i].instruc) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-                (*memoria)[i].uso = 'i';
-                printf("Escrita realizada no endereço %d ao inves de %d\n", i, original);
+            else if((*memoria)[i].uso != '\0')
+                fprintf(stderr, "Instrucao sobrescreveu em endereço ja utilizado por um dado.\n"); //se o uso for terminador nulo, entao esta diponivel
+            strncpy((*memoria)[i].mem, linha, 17);
+            (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+            (*memoria)[i].uso = 'i';
 
-                i = original;
-                }
-                i++;
-                if(i == 255){
-                    printf("\nNumero de instrucoes atingiu limite maximo na memoria\n");
-                    break;
-                }
+            i++;
+            if(i == 255){
+                printf("\nNumero de instrucoes atingiu limite maximo na memoria\n");
+                break;
+            }
                 
-            }
-
-            
-            
+        }     
             fclose(arq);
             printf("Arquivo lido com sucesso!");
-        }
-        else
-            fprintf(stderr, "Erro ao abrir arquivo de instrucoes.");
-        return 0; // Retorna 0 indicando sucesso
     }
-
-
+    else
+        fprintf(stderr, "Erro ao abrir arquivo de instrucoes.");
+    return 0; // Retorna 0 indicando sucesso
+}

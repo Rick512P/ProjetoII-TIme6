@@ -42,8 +42,7 @@ typedef struct{
 
 //Memoria de dados e instrucoes unidas
 typedef struct {
-    char dados[17];
-    char instruc[17];
+    char mem[17];
     char uso; //i -> endereço usado para instrucao || d -> endereço usado para dados
 } Memorias;
 

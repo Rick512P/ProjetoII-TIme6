@@ -47,8 +47,8 @@ char* carregaDados(Memorias **memoria){
             }
 
             else if((*memoria)[i].uso == '\0'){ //se o uso nao for i, entao sera usado para dados ('d')
-                strncpy((*memoria)[i].dados, linha, 17);
-                (*memoria)[i].dados[sizeof((*memoria)[i].dados) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+                strncpy((*memoria)[i].mem, linha, 17);
+                (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
                 (*memoria)[i].uso = 'd';
             }
             else{
@@ -66,8 +66,8 @@ char* carregaDados(Memorias **memoria){
                     fprintf(stderr, "Espaco nao encontrado na memoria.\n");
                     return NULL;
                 }
-                strncpy((*memoria)[i].dados, linha, 17);
-                (*memoria)[i].dados[sizeof((*memoria)[i].dados) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+                strncpy((*memoria)[i].mem, linha, 17);
+                (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
                 (*memoria)[i].uso = 'd';
                 printf("Escrita realizada no endereço %d ao inves de %d\n", i, original);
                 i = original;
@@ -128,8 +128,8 @@ void recarregarmd(Memorias **md, char *nome_arquivo){
             linha[strcspn(linha, "\r\n")] = '\0';
 
             // Copia a linha para a estrutura memoria de Dados
-            strncpy((*md)[i].dados, linha, 9);
-            (*md)[i].dados[sizeof((*md)[i].dados) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+            strncpy((*md)[i].mem, linha, 9);
+            (*md)[i].mem[sizeof((*md)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
             
         }
         fclose(setmd);        

@@ -97,7 +97,7 @@ int menu(){
             break;
 
         case 5: //Imprimir estatísticas como: quantas intruc, classes, etc;
-            imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas);
+            imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas, program_counter);
             break;
             
         case 6: // Imprimir Assembly
@@ -105,7 +105,7 @@ int menu(){
             break;
 
         case 7: //imprimir todo o simulador
-            imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas);
+            imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas, program_counter);
             imprimeSimulador(tamLinhas, instrucoesDecodificadas, memorias);      
             imprimeMemoria(memorias);
             imprimirASM(AssemblyInst, tamLinhas);
@@ -142,6 +142,7 @@ int menu(){
             Etapa = controller(2, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
+            free(aux);
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
             break;
 
@@ -158,6 +159,7 @@ int menu(){
             memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de md
 
             backstep(&StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
+            free(aux);
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             

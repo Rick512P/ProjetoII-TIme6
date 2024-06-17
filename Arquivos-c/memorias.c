@@ -6,41 +6,21 @@ type_instruc Memoria(RegistradoresAux *aux){
 
         traduzido = decoder(aux); //DECODER IRA DECOMPOR A INSTRUÇÃO
 
-		
         return traduzido; //retorna para o controller
-
 }
 
 void escreveDado(Memorias **mem, int immediate, char *valor) { //ESCREVE O DADO DA POSICAO DE MEMORIA 128 -> 256
     if (immediate >= 0 && immediate < 256) {
-		if((*mem)[immediate].uso != 'i'){ //se o uso nao for i, entao sera usado para dados ('d')
-			strcpy((*mem)[immediate].dados, "00000000");
-        	strcat((*mem)[immediate].dados, valor);
+		if((*mem)[immediate].uso == '\0'){ //se o uso foi \0, entao sera usado para dados ('d')
+			strcpy((*mem)[immediate].mem, "00000000");
+        	strcat((*mem)[immediate].mem, valor);
 			(*mem)[immediate].uso = 'd';
 		}
 		else{
-			int aux = 0, original;
-			original = immediate;
-			while((*mem)[immediate].uso == 'i'){
-				fprintf(stderr, "Tentativa de escrita em endereço ja utilizado por uma instrucao.\n");
-				immediate++;
-				if ((*mem)[immediate].uso != 'i'){
-					aux = 1;
-				}
-			}
-			if(aux == 1){ //se aux == 1, achamos um local para escrever o dado na memoria
-				strcat((*mem)[immediate].dados, "00000000");
-        		strcat((*mem)[immediate].dados, valor);
-				(*mem)[immediate].uso = 'd';
-				printf("Escrita realizada no endereço %d ao inves de %d\n", immediate, original);
-			}
-			else {
-				fprintf(stderr, "Local na memoria nao encontrado para escrita de dados\n");
-			}
-			
-		}
-		
-    } else {
+			fprintf(stderr, "Tentativa de escrita em endereço ja utilizado por uma instrucao/dado.\n");
+		}	
+	}
+	else {
         fprintf(stderr, "Tentativa de escrita fora dos limites da memória no endereço %d\n", immediate);
     }
 }
@@ -49,19 +29,19 @@ void imprimeMemoria(Memorias *md){
 	for (int i = 0; i < 256; i++) {
 		if(md[i].uso == 'd'){
 			if (i < 10)
-				printf("Dado armazenado no endereco 00%d da MD: [%s]\n", i, md[i].dados);
+				printf("Dado armazenado no endereco 00%d da MD: [%s]\n", i, md[i].mem);
 			else if (i<100)
-				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].dados);
+				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].mem);
 			else
-				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].dados);
+				printf("Dado armazenado no endereco %d da MD: [%s]\n", i, md[i].mem);
 		}
 		else{
 			if (i < 10)
-				printf("Dado armazenado no endereco 00%d da MD: [%s]\n", i, md[i].instruc);
+				printf("Instrucao armazenada no endereco 00%d da MD: [%s]\n", i, md[i].mem);
 			else if (i<100)
-				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].instruc);
+				printf("Instrucao armazenada no endereco 0%d da MD: [%s]\n", i, md[i].mem);
 			else
-				printf("Dado armazenado no endereco %d da MD: [%s]\n", i, md[i].instruc);
+				printf("Instrucao armazenada no endereco %d da MD: [%s]\n", i, md[i].mem);
 			
 		}
 	}
@@ -77,7 +57,7 @@ void escreverArquivoMemoria(Memorias *md) {
 	
 	for (int i=0; i<256; i++){
 		if(md[i].uso == 'd')
-			fprintf(arquivo, "%s\n", md[i].dados);
+			fprintf(arquivo, "%s\n", md[i].mem);
 		else{
 			fprintf(arquivo, "\n");
 		}

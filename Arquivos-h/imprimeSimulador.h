@@ -9,7 +9,7 @@
 
 
 void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoria);
-void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instrucoesDecodificadas);
+void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instrucoesDecodificadas, int pc);
 void imprimeRegsAux(RegistradoresAux *aux);
 
 #endif

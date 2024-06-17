@@ -17,9 +17,16 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
         {        
             if (ProxEtapa == 1)//Etapa 1 -> Recebe Instrução e Incrementa program_counter
             {
+                free(aux);
                 *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
-                strcpy((*aux)->registradorInst, md[*program_counter]->instruc);
+                //verifica se sera um instrucao ou dado
+                if(md[*program_counter]->uso == 'i')
+                    strcpy((*aux)->registradorInst, md[*program_counter]->mem);
 
+                else{ //se for dado, incrementa pc e volta para o começo do while
+                    increment_PC(program_counter, 1);
+                    continue;
+                }
                 (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); //DECODIFICA A INSTRUCAO
 
                 PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
@@ -84,7 +91,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     if ((*sinal)->tipo == 3) // lw (load word)
                     {
                         // Carregar dado da memória
-                            strcpy((*aux)->registradorDados, md[(*sinal)->imm]->dados + 8); //copio para o registrador de dados, o dado da memoria
+                            strcpy((*aux)->registradorDados, md[(*sinal)->imm]->mem + 8); //copio para o registrador de dados, o dado da memoria
                             //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                             
                             imprimeRegsAux(*aux);       
@@ -156,8 +163,16 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
         //Run by Step
         if (ProxEtapa == 1)//Etapa 1 -> Recebe Instrução e Incrementa program_counter
         {
+            free(aux);
             *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
-            strcpy((*aux)->registradorInst, md[*program_counter]->instruc);
+            //verifica se sera um instrucao ou dado
+            if(md[*program_counter]->uso == 'i')
+                strcpy((*aux)->registradorInst, md[*program_counter]->mem);
+                    
+            else{ //se for dado, incrementa pc e quebra switch
+                increment_PC(program_counter, 1);
+                break;
+                }
 
             (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); //DECODIFICA A INSTRUCAO
 
@@ -223,7 +238,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 if ((*sinal)->tipo == 3) // lw (load word)
                 {
                     // Carregar dado da memória
-                        strcpy((*aux)->registradorDados, md[(*sinal)->imm]->dados + 8); //copio para o registrador de dados, o dado da memoria
+                        strcpy((*aux)->registradorDados, md[(*sinal)->imm]->mem + 8); //copio para o registrador de dados, o dado da memoria
                         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                         
                         imprimeRegsAux(*aux);       
@@ -294,6 +309,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
 void backstep(int *StateForBack, int tamLinhas, int *regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal)
 {
+    free(*aux);
     *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
 
     int jump, RD, RT, i, a=0;
