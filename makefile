@@ -1,19 +1,22 @@
 index:
-	gcc -o executavel Arquivos-c/*.c
 	clear
+	gcc -o executavel Arquivos-c/*.c
+#clear
 	./executavel
 
 testes:
+	clear
+	gcc -o Testes -g Arquivos-c/*.c
+	gdb ./Testes
+
+clear:
 	@if [ -f executavel ]; then \
 		rm executavel; \
 	fi
 	clear
 
-	gcc -o executavel Arquivos-c/*.c -g
-	./executavel
-
-clear:
-	@if [ -f executavel ]; then \
-		rm executavel; \
+ccleartestes:
+	@if [ -f Testes ]; then \
+		rm Testes; \
 	fi
 	clear

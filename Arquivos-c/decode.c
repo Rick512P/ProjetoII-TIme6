@@ -36,9 +36,4 @@ type_instruc decoder(RegistradoresAux *aux){
         traducao.rs[3] = '\0';
         return traducao;
     }
-
-
-    
-    
-    
 }

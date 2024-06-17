@@ -47,10 +47,23 @@ void escreveDado(Memorias **mem, int immediate, char *valor) { //ESCREVE O DADO 
 
 void imprimeMemoria(Memorias *md){
 	for (int i = 0; i < 256; i++) {
-		if(md[i].uso == 'd')
-			printf("Dado armazenado no endereco %d da MD: [%s]\n", i, md[i].dados);
-		else
-			printf("Dado armazenado no endereco %d da MD: [%s]\n", i, md[i].instruc);
+		if(md[i].uso == 'd'){
+			if (i < 10)
+				printf("Dado armazenado no endereco 00%d da MD: [%s]\n", i, md[i].dados);
+			else if (i<100)
+				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].dados);
+			else
+				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].dados);
+		}
+		else{
+			if (i < 10)
+				printf("Dado armazenado no endereco 00%d da MD: [%s]\n", i, md[i].instruc);
+			else if (i<100)
+				printf("Dado armazenado no endereco 0%d da MD: [%s]\n", i, md[i].instruc);
+			else
+				printf("Dado armazenado no endereco %d da MD: [%s]\n", i, md[i].instruc);
+			
+		}
 	}
 }
 
