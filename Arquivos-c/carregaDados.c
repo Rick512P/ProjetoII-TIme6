@@ -44,55 +44,34 @@ char* carregaDados(Memorias **memoria){
             
             if(linha[0] == '\n'){
                 i++;
+                continue;
             }
 
-            else if((*memoria)[i].uso == '\0'){ //se o uso nao for i, entao sera usado para dados ('d')
-                strncpy((*memoria)[i].mem, linha, 17);
-                (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-                (*memoria)[i].uso = 'd';
+            else if((*memoria)[i].uso == 'i'){
+                fprintf(stderr, "Dado nao escrito. Endereço ja utilizado por uma instrucao.\n"); //se o uso for terminador nulo, entao esta diponivel 
+                i++;
+                continue;
             }
-            else{
-                int posicao = -1, original;
-                original = i;
-                while((*memoria)[i].uso != '\0'){
-                    fprintf(stderr, "Tentativa de escrita em endereço ja utilizado por uma instrucao/dado.\n");
-                    i++;
-                    if ((*memoria)[i].uso == '\0'){
-                        posicao = i;
-                        break;
-                    }
-                }
-                if(posicao == -1){
-                    fprintf(stderr, "Espaco nao encontrado na memoria.\n");
-                    return NULL;
-                }
-                strncpy((*memoria)[i].mem, linha, 17);
-                (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-                (*memoria)[i].uso = 'd';
-                printf("Escrita realizada no endereço %d ao inves de %d\n", i, original);
-                i = original;
-            }
-            
+            strncpy((*memoria)[i].mem, linha, 17);
+            (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+            (*memoria)[i].uso = 'd';
+        
             linha[strcspn(linha, "\r\n")] = '\0';
-
-            // Copia a linha para a estrutura memoria de Dados
             
             i++;
             if(i == 255){
-                    printf("\nNumero de instrucoes atingiu limite maximo na memoria\n");
-                    break;
+                printf("\nNumero de instrucoes atingiu limite maximo na memoria\n");
             }
         }
-        
         fclose(setmemoria);
         printf("Arquivo lido com sucesso!\n");
     }
-    else
+    else{
         fprintf(stderr, "Erro ao abrir arquivo memoria.dat\n");
-
-    if (error == 0)
+    }
+    if (error == 0){
         return nome_arquivo;
-
+    }
     else{
         strcpy(nome_arquivo, "ERRO");
         return nome_arquivo;
