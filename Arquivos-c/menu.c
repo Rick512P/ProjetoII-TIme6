@@ -139,10 +139,11 @@ int menu(){
                 printf("Instrucoes nao carregadas");
                 break;
             }
+            printf("instrucao: %s", memorias->mem);
+            printf("uso: %c", memorias->uso);
             Etapa = controller(2, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
-            printf("\n");
-
+            printf("\n"); 
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
             break;
 

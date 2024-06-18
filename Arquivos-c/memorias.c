@@ -5,7 +5,6 @@ type_instruc Memoria(RegistradoresAux *aux){
         type_instruc traduzido; //DECOMPOE A INSTRUÇÃO EM OPCODE, RS, RT, RD, FUNCT, IMM OU ADDR
 
         traduzido = decoder(aux); //DECODER IRA DECOMPOR A INSTRUÇÃO
-
         return traduzido; //retorna para o controller
 }
 

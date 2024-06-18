@@ -3,7 +3,6 @@
 
 int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **memoria, int *regs, RegistradoresAux *aux) {
     int address, rd;
-
     if (strcmp((*instrucoesDecodificadas)[*contador].opcode, "0000") == 0 ) {
         char Target[9];
         char Dest[9];
@@ -66,6 +65,7 @@ int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **memori
         int immediate;
         immediate = bin_to_decimal((*instrucoesDecodificadas)[*contador].imm);
         aux->registradorA = retornoRegs(regs, (*instrucoesDecodificadas)[*contador].rs);
+        printf("imm: %d\tregA: %d\n", immediate, aux->registradorA);
         if ((immediate + aux->registradorA) > 127 || (immediate + aux->registradorA) < -128){
                 fprintf(stderr, "Overflow. Registrador RD com numero de bits maior que a capacidade suportada.\n");
         }
