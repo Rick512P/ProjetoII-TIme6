@@ -15,7 +15,7 @@ Sinais *inicializaSinais(){
 
 Sinais *AddSinais(type_instruc *inst){
     Sinais *sinal = malloc(sizeof(Sinais));
-    if(inst->opcode == "0000"){//TIPO R
+    if(strcmp(inst->opcode, "0000") == 0){//TIPO R
         sinal->tipo = 0;
         sinal->RS = bin_to_decimal(inst->rs);
         sinal->RT = bin_to_decimal(inst->rt);
@@ -26,7 +26,7 @@ Sinais *AddSinais(type_instruc *inst){
         return sinal;
     } 
 
-    else if(inst->opcode == "0100"){//ADDI
+    else if(strcmp(inst->opcode, "0100") == 0){//ADDI
         sinal->tipo = 2;
         sinal->RS = bin_to_decimal(inst->rs);
         sinal->RT = bin_to_decimal(inst->rt);
@@ -37,7 +37,7 @@ Sinais *AddSinais(type_instruc *inst){
         return sinal;
     }
 
-    else if(inst->opcode == "1011"){//LW
+    else if(strcmp(inst->opcode, "1011") == 0){//LW
         sinal->tipo = 3;
         sinal->RS = bin_to_decimal(inst->rs);
         sinal->RT = bin_to_decimal(inst->rt);
@@ -47,7 +47,7 @@ Sinais *AddSinais(type_instruc *inst){
         return sinal;
     }
 
-    else if(inst->opcode == "1111"){//SW
+    else if(strcmp(inst->opcode, "1111") == 0){//SW
         sinal->tipo = 4;
         sinal->RS = bin_to_decimal(inst->rs);
         sinal->RT = bin_to_decimal(inst->rt);
@@ -57,7 +57,7 @@ Sinais *AddSinais(type_instruc *inst){
         return sinal;
     }
 
-    else if(inst->opcode == "1000"){//BEQ
+    else if(strcmp(inst->opcode, "1000") == 0){//BEQ
         sinal->tipo = 5;
         sinal->RS = bin_to_decimal(inst->rs);
         sinal->RT = bin_to_decimal(inst->rt);
@@ -67,7 +67,7 @@ Sinais *AddSinais(type_instruc *inst){
         return sinal;
     }
 
-    else if(inst->opcode == "0010"){//J
+    else if(strcmp(inst->opcode, "0010") == 0){//J
         sinal->tipo = 1;
         sinal->RS = -1;
         sinal->RT = -1;

@@ -1,14 +1,8 @@
-
 #include "../Arquivos-h/controller.h"
 
 int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal, int ProxEtapa){
-    int jump, RD, RT, i, a=0, PC, verifica_fim = 0, immediate, dados;
+    int jump, RD, RT, i, a=0, verifica_fim = 0, immediate, dados;
     char posicao[4];
-    /*for(int j=0;j<NumeroLinhas;j++){
-        strcpy(aux->registradorInst, memoriaInst[j]->instruc);
-        (*instrucoesDecodificadas)[j] = memInstruc(aux);
-    }*/
-    
 
     switch (op)
     {
@@ -17,7 +11,8 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
         {        
             if (ProxEtapa == 1)//Etapa 1 -> Recebe Instrução e Incrementa program_counter
             {
-                free(aux);
+                printf("\npc: %d\n", *program_counter);
+                free(*aux);
                 *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
                 //verifica se sera um instrucao ou dado
                 if(md[*program_counter]->uso == 'i')
@@ -29,17 +24,17 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 }
                 (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); //DECODIFICA A INSTRUCAO
 
-                PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
+                (*aux)->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
                 increment_PC(program_counter, 1);
 
                 imprimeRegsAux(*aux);       
                 (*StateForBack)++;  
-                controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 2);
+                controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 2);
             }
 
             else if (ProxEtapa == 2)//Etapa 2 -> Decodifico as instruções, gero os sinais e Adiciono valores aos registradores auxiliares
             {
-                *sinal = AddSinais(instrucoesDecodificadas[PC]);
+                *sinal = AddSinais(instrucoesDecodificadas[(*aux)->PC]);
 
                 (*aux)->registradorA = (*sinal)->RS;
                 (*aux)->registradorB = (*sinal)->RT;
@@ -47,7 +42,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                 imprimeRegsAux(*aux);       
                 (*StateForBack)++;  
-                controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 3);           
+                controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 3);           
             }
             
             if (ProxEtapa == 3)//Etapa 3 --> Executa tipo R e Addi, Calcula Endereço LW e SW, Desvia Jump e Beq
@@ -61,7 +56,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                     imprimeRegsAux(*aux);       
                     (*StateForBack)++;  
-                    controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 1); 
+                    controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                 }
                 
                 else if ((*sinal)->tipo == 0 || (*sinal)->tipo == 2 || (*sinal)->tipo == 3 || (*sinal)->tipo == 4)
@@ -70,7 +65,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     (*aux)->registradorULA = ULA(instrucoesDecodificadas, program_counter, md, regs, *aux); 
                     imprimeRegsAux(*aux);
                     (*StateForBack)++;  
-                    controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 4); 
+                    controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 4); 
                 }
                 
                 else if ((*sinal)->tipo == 5)//verifica se é beq
@@ -79,11 +74,9 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         *program_counter = (*aux)->registradorULA;
                         imprimeRegsAux(*aux);
                         (*StateForBack)++;  
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 }
-
-                
             }
                     
             if (ProxEtapa == 4) // Etapa 4 -> Escreve em Regs para tipo R e Addi, Escreve em Memoria para SW, Lê Valor de Memória para LW
@@ -96,7 +89,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                             
                             imprimeRegsAux(*aux);       
                             (*StateForBack)++;  
-                            controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 5);
+                            controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 5);
                     }
                     else if ((*sinal)->tipo == 4) // sw (store word)
                     {
@@ -119,7 +112,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                             imprimeRegsAux(*aux);
                             (*StateForBack)++;
-                            controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 1); 
+                            controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 0) // R-type
                     {
@@ -139,7 +132,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         imprimeRegsAux(*aux);
                         (*StateForBack)++;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 }
 
@@ -152,7 +145,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     
                         imprimeRegsAux(*aux);       
                         (*StateForBack)++;  
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     break;
                 }      
@@ -163,7 +156,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
         //Run by Step
         if (ProxEtapa == 1)//Etapa 1 -> Recebe Instrução e Incrementa program_counter
         {
-            free(aux);
+            free(*aux);
             *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
             //verifica se sera um instrucao ou dado
             if(md[*program_counter]->uso == 'i')
@@ -176,7 +169,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
             (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); //DECODIFICA A INSTRUCAO
 
-            PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
+            (*aux)->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
             increment_PC(program_counter, 1);
 
             imprimeRegsAux(*aux);       
@@ -186,7 +179,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
         else if (ProxEtapa == 2)//Etapa 2 -> Decodifico as instruções, gero os sinais e Adiciono valores aos registradores auxiliares
         {
-            *sinal = AddSinais(instrucoesDecodificadas[PC]);
+            *sinal = AddSinais(instrucoesDecodificadas[(*aux)->PC]);
 
             (*aux)->registradorA = (*sinal)->RS;
             (*aux)->registradorB = (*sinal)->RT;
@@ -309,9 +302,6 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
 void backstep(int *StateForBack, int tamLinhas, int *regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal)
 {
-    free(*aux);
-    *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
-
     int jump, RD, RT, i, a=0;
     for (i = 0; i<8; i++){
         regs[i]=0;

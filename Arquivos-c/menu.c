@@ -142,7 +142,7 @@ int menu(){
             Etapa = controller(2, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n");
-            free(aux);
+
             puts(AssemblyInst[program_counter-1].InstructsAssembly);
             break;
 

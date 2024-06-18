@@ -17,5 +17,6 @@ RegistradoresAux *inicializaRegsAux(){
     RegsAux->registradorDados[0] = '\0';
     RegsAux->registradorInst[0] = '\0';
     RegsAux->registradorULA = 0;
+    RegsAux->PC = 0;
     return RegsAux;
 }

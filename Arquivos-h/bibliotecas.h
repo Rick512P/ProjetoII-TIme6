@@ -59,6 +59,7 @@ typedef struct {
   int registradorA;
   int registradorB;
   int registradorULA;
+  int PC;
 } RegistradoresAux;
 
 #endif
