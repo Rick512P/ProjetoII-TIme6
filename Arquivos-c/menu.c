@@ -8,10 +8,10 @@ int main(){
 int menu(){
     Assembly *AssemblyInst;
     Memorias *memorias = NULL;
-    RegistradoresAux *aux;
+    RegistradoresAux *aux = NULL;
     Sinais *sinal = NULL;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
-    int StateForBack = -1, i = 0, Etapa = 1;
+    int StateForBack = -1, i = 0, Etapa = 1, auxiliar;
     type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*));
     char dat[300]; //Recebe o nome do arquivo.dat
     //int *regs; //registradores como um inteiro mesmo
@@ -98,6 +98,7 @@ int menu(){
 
         case 5: //Imprimir estatísticas como: quantas intruc, classes, etc;
             imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas, program_counter);
+            printf("Etapa atual: %d", Etapa);
             break;
             
         case 6: // Imprimir Assembly
@@ -129,7 +130,6 @@ int menu(){
                 printf("Instrucoes nao carregadas");
                 break;
             }
-            program_counter = 0;
             Etapa = controller(1, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
@@ -147,6 +147,7 @@ int menu(){
             break;
 
         case 12: //Chamar função responsável por retornar uma instrução (PC--)
+            printf("State: %d\n", StateForBack);
             if(memorias == NULL){
                 printf("Instrucoes nao carregadas");
                 break;
@@ -158,8 +159,15 @@ int menu(){
             }
             memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de md
 
-            backstep(&StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal);
-            free(aux);
+            for (i = 0; i<8; i++){
+                regs[i]=0;
+            }
+            Etapa = 1;
+
+            auxiliar = StateForBack--;
+
+            Etapa = controller(3, &StateForBack, auxiliar, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
+
             puts(AssemblyInst[program_counter].InstructsAssembly);
             break;
             

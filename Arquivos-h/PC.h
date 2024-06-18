@@ -6,6 +6,6 @@
 extern int program_counter;
 
 void increment_PC( int *program_counter, int op);
-
+void increment_State(int *StateForBack, int op);
 
 #endif
