@@ -47,11 +47,8 @@ char* carregaDados(Memorias *memoria){
                 continue;
             }
 
-            else if((memoria)[i].uso == 'i'){
-                fprintf(stderr, "Dado nao escrito. Endereço ja utilizado por uma instrucao.\n"); //se o uso for terminador nulo, entao esta diponivel 
-                i++;
-                continue;
-            }
+            else if((memoria)[i].uso == 'i')
+                fprintf(stderr, "Dado sobrescreveu endereço ja utilizado por uma instrucao.\n"); //se o uso for terminador nulo, entao esta diponivel 
             strncpy((memoria)[i].mem, linha, 17);
             (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
             (memoria)[i].uso = 'd';

@@ -54,13 +54,24 @@ int parser(Memorias *memoria, int *tamanho_linhas){
             if(linha[0] == '\n'){
                 i++;
             }
-            // Copia a linha para a estrutura memoria
 
-            else if((memoria)[i].uso != '\0')
-                fprintf(stderr, "Instrucao sobrescreveu em endereço ja utilizado por um dado.\n"); //se o uso for terminador nulo, entao esta diponivel
+            // Copia a linha para a estrutura memoria
+            else if (strlen(linha) == 8){ //SE FOR DADO
+                if((memoria)[i].uso != '\0')
+                    fprintf(stderr, "Dado sobrescreveu em endereço ja utilizado por uma instrucao.\n"); //se o uso for terminador nulo, entao esta diponivel
+            strcat((memoria)[i].mem, "00000000");
+            strcat((memoria)[i].mem, linha);
+            (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+            (memoria)[i].uso = 1;
+            }
+
+            else{
+                if(((memoria)[i].uso != -1))
+                    fprintf(stderr, "Instrucao sobrescreveu em endereço ja utilizado por um dado.\n"); //se o uso for terminador nulo, entao esta diponivel
             strncpy((memoria)[i].mem, linha, 17);
             (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
             (memoria)[i].uso = 0;
+            }
 
             i++;
             if(i == 255){

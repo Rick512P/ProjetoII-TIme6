@@ -19,6 +19,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     strcpy((*aux)->registradorInst, md[*program_counter].mem);
 
                 else{ //se for dado, incrementa pc e volta para o começo do while
+                    printf("Posicao vazia\n");
                     increment_PC(program_counter, 1);
                     continue;
                 }

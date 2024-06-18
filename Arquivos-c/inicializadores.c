@@ -5,7 +5,7 @@ Memorias *inicializaMem(){
     Memorias *md = malloc(256 * sizeof(Memorias));
     for(int i = 0; i < 256; i++){
         md[i].mem[0] = '\0';
-        md[i].uso = '\0';
+        md[i].uso = -1;
     }
     return md;
 }
