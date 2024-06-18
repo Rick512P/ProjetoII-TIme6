@@ -8,7 +8,7 @@ int main(){
 int menu(){
     Assembly *AssemblyInst;
     Memorias *memorias = NULL;
-    RegistradoresAux *aux = malloc(sizeof(RegistradoresAux));
+    RegistradoresAux *aux = malloc(256 * sizeof(RegistradoresAux));
     Sinais *sinal = NULL;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
     int StateForBack = -1, i = 0, Etapa = 1, auxiliar, verifica = 0;
