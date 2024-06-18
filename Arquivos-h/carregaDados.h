@@ -5,7 +5,7 @@
 #include "menu.h"
 
 void remove_newline(char *line);
-char* carregaDados(Memorias **memoria);
+char* carregaDados(Memorias *memoria);
 void escreverArquivoMemoria(Memorias *memoria);
 
 #endif

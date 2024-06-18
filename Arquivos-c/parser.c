@@ -1,7 +1,7 @@
 #include "../Arquivos-h/parser.h"
 
 //RESPONSAVEL POR ABRIR O ARQUIVO E ENCHER A MEMORIA DE INSTRUÇÕES
-int parser(Memorias **memoria, int *tamanho_linhas){
+int parser(Memorias *memoria, int *tamanho_linhas){
     char linha[100], nome_arquivo[200];
     int contador_de_linhas = 0, opcao;
     FILE *arq;
@@ -35,7 +35,7 @@ int parser(Memorias **memoria, int *tamanho_linhas){
         //alocaçao de memoria que minha variavel memoria terá será = ao tanto de linhas do arquivo lido
         //*memoria = malloc(contador_de_linhas * sizeof(Memorias));
 
-        if (!(*memoria)) { //se memoria nao ter nada alocado, dará erro.
+        if (!memoria) { //se memoria nao ter nada alocado, dará erro.
             fprintf(stderr, "Falha na alocação de memória para instruções.\n"); //stderr envia mensagem de erro
             //separadamente do fluxo principal de saída de um programa
             return 1;
@@ -56,11 +56,11 @@ int parser(Memorias **memoria, int *tamanho_linhas){
             }
             // Copia a linha para a estrutura memoria
 
-            else if((*memoria)[i].uso != '\0')
+            else if((memoria)[i].uso != '\0')
                 fprintf(stderr, "Instrucao sobrescreveu em endereço ja utilizado por um dado.\n"); //se o uso for terminador nulo, entao esta diponivel
-            strncpy((*memoria)[i].mem, linha, 17);
-            (*memoria)[i].mem[sizeof((*memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-            (*memoria)[i].uso = 'i';
+            strncpy((memoria)[i].mem, linha, 17);
+            (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
+            (memoria)[i].uso = 0;
 
             i++;
             if(i == 255){

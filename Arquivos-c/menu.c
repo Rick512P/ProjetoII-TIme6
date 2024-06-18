@@ -8,10 +8,10 @@ int main(){
 int menu(){
     Assembly *AssemblyInst;
     Memorias *memorias = NULL;
-    RegistradoresAux *aux = NULL;
+    RegistradoresAux *aux = malloc(sizeof(RegistradoresAux));
     Sinais *sinal = NULL;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
-    int StateForBack = -1, i = 0, Etapa = 1, auxiliar;
+    int StateForBack = -1, i = 0, Etapa = 1, auxiliar, verifica = 0;
     type_instruc **instrucoesDecodificadas = malloc(sizeof(type_instruc*));
     char dat[300]; //Recebe o nome do arquivo.dat
     //int *regs; //registradores como um inteiro mesmo
@@ -45,6 +45,7 @@ int menu(){
         {
         case 0:
             free(memorias);
+            free(aux);
             for(i=0;i<8;i++){
                 regs[i] = 0;
             }
@@ -55,20 +56,23 @@ int menu(){
             break;
             
         case 1: //Carregar memória de Instruções
-            memorias = inicializaMem();
-            parser(&memorias, &tamLinhas);
-            *instrucoesDecodificadas = malloc(tamLinhas * sizeof(type_instruc));
-            if (*instrucoesDecodificadas == NULL) {
-                fprintf(stderr, "Falha ao alocar memória para instruções decodificadas.\n");
-                return -1;
-            }
+            if (verifica == 0){
+                memorias = inicializaMem();
+                parser(memorias, &tamLinhas);
+                *instrucoesDecodificadas = malloc(tamLinhas * sizeof(type_instruc));
+                if (*instrucoesDecodificadas == NULL) {
+                    fprintf(stderr, "Falha ao alocar memória para instruções decodificadas.\n");
+                    return -1;
+                }
 
-            AssemblyInst = calloc((tamLinhas + 1), sizeof(Assembly));
-            if (AssemblyInst == NULL) {
-                fprintf(stderr, "Falha ao alocar memória para instrucoes assembly.\n");
-                return -1;
-            }
-            sinal = inicializaSinais();
+                AssemblyInst = calloc((tamLinhas + 1), sizeof(Assembly));
+                if (AssemblyInst == NULL) {
+                    fprintf(stderr, "Falha ao alocar memória para instrucoes assembly.\n");
+                    return -1;
+                }
+                sinal = inicializaSinais();
+                verifica++;
+                }
             break;
 
         case 2: //Carregar Memória de Dados
@@ -76,7 +80,7 @@ int menu(){
                 memorias = inicializaMem();
             }
             if (program_counter == 0){
-                strcpy(dat,carregaDados(&memorias));
+                strcpy(dat,carregaDados(memorias));
                 printf("\n");
                 puts(dat);
                 printf("\n");
@@ -98,7 +102,7 @@ int menu(){
 
         case 5: //Imprimir estatísticas como: quantas intruc, classes, etc;
             imprimeEstatisticas(memorias, tamLinhas, instrucoesDecodificadas, program_counter);
-            printf("Etapa atual: %d", Etapa);
+            printf("Etapa atual: %d\n", Etapa);
             break;
             
         case 6: // Imprimir Assembly
@@ -130,7 +134,7 @@ int menu(){
                 printf("Instrucoes nao carregadas");
                 break;
             }
-            Etapa = controller(1, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
+            Etapa = controller(1, &StateForBack, tamLinhas, regs, memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
 
@@ -139,12 +143,12 @@ int menu(){
                 printf("Instrucoes nao carregadas");
                 break;
             }
-            printf("instrucao: %s", memorias->mem);
-            printf("uso: %c", memorias->uso);
-            Etapa = controller(2, &StateForBack, tamLinhas, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
+            printf("instrucao: %s\n", memorias->mem);
+            printf("uso: %d\n", memorias->uso);
+            Etapa = controller(2, &StateForBack, tamLinhas, regs, memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n"); 
-            puts(AssemblyInst[program_counter-1].InstructsAssembly);
+            puts(AssemblyInst[aux->PC].InstructsAssembly);
             break;
 
         case 12: //Chamar função responsável por retornar uma instrução (PC--)
@@ -167,9 +171,9 @@ int menu(){
 
             auxiliar = StateForBack--;
 
-            Etapa = controller(3, &StateForBack, auxiliar, regs, &memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
+            Etapa = controller(3, &StateForBack, auxiliar, regs, memorias, &program_counter, instrucoesDecodificadas, &aux, &sinal, Etapa);
 
-            puts(AssemblyInst[program_counter].InstructsAssembly);
+            puts(AssemblyInst[aux->PC].InstructsAssembly);
             break;
             
         default:

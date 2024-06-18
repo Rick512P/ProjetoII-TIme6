@@ -1,6 +1,6 @@
 #include "../Arquivos-h/controller.h"
 
-int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal, int ProxEtapa){
+int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias *md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal, int ProxEtapa){
     int jump, RD, RT, i, a=0, verifica_fim = 0, immediate, dados, pc;
     char posicao[4];
 
@@ -13,10 +13,10 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             {
             case 1://Etapa 1 -> Recebe Instrução e Incrementa program_counter
                 printf("Program Counter -> %d\n", *program_counter);
-                *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
+                *aux = inicializaRegsAux(*aux); //reinicializa-ra os registradores para armazenar novos valores
                 //verifica se sera um instrucao ou dado
-                if(md[*program_counter]->uso == 'i')
-                    strcpy((*aux)->registradorInst, md[*program_counter]->mem);
+                if(md[*program_counter].uso == 0)
+                    strcpy((*aux)->registradorInst, md[*program_counter].mem);
 
                 else{ //se for dado, incrementa pc e volta para o começo do while
                     increment_PC(program_counter, 1);
@@ -52,7 +52,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     a++;
     
                     increment_State(StateForBack, 1); 
-                    (*aux) = NULL;;
+                    ;
                     controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                 }
                 
@@ -71,7 +71,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         *program_counter = (*aux)->registradorULA;
 
                         increment_State(StateForBack, 1); 
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 }
@@ -81,7 +81,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     if ((*sinal)->tipo == 3) // lw (load word)
                     {
                         // Carregar dado da memória
-                        strcpy((*aux)->registradorDados, md[(*sinal)->imm]->mem + 8); //copio para o registrador de dados, o dado da memoria
+                        strcpy((*aux)->registradorDados, md[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
                         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                         
    
@@ -108,7 +108,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escreveDado(md, (*sinal)->imm, conteudo_bin);
 
                         (*StateForBack)++;
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 0) // R-type
@@ -118,7 +118,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, (*aux)->registradorULA, posicao);
 
                         (*StateForBack)++;
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 2) // addi
@@ -128,7 +128,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, (*aux)->registradorULA, posicao);
 
                         (*StateForBack)++;
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     break;
@@ -140,7 +140,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, dados, posicao); // Load: Reg[IR[20:16]] <= MDR
                          
                         increment_State(StateForBack, 1); 
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 break;
@@ -157,14 +157,16 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
         switch (ProxEtapa)
         {
         case 1:///Etapa 1 -> Recebe Instrução e Incrementa program_counter
-            printf("instrucao: %s", md[*program_counter]->mem);
-            printf("uso: %c", md[*program_counter]->uso);
-            *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
+            *aux = inicializaRegsAux(*aux); //reinicializa-ra os registradores para armazenar novos valores
             //verifica se sera um instrucao ou dado
+            (*aux)->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
             
-            if(md[*program_counter]->uso == 'i'){
-                strcpy((*aux)->registradorInst, md[*program_counter]->mem);
-                printf("Instrucao coletada com sucesso");
+            if(md[(*aux)->PC].uso == 0){
+                strcpy((*aux)->registradorInst, md[(*aux)->PC].mem);
+                if (strcmp((*aux)->registradorInst, md[(*aux)->PC].mem) == 0)
+                    printf("Instrucao coletada com sucesso!\n");
+                else
+                    printf("Instrução incorreta! Foi lido %s ao invés de %s\n", (*aux)->registradorInst, md[(*aux)->PC].mem);
             }        
             else{ //se for dado, incrementa pc e quebra switch
                 printf("Nao foi encontrado nenhuma instrucao\n");
@@ -172,9 +174,8 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 return 1;
             }
 
-            (*instrucoesDecodificadas)[*program_counter] = Memoria(*aux); //DECODIFICA A INSTRUCAO
-            printf("Instrucao decodificada %s\n", (*instrucoesDecodificadas)[*program_counter].opcode);
-            (*aux)->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
+            (*instrucoesDecodificadas)[(*aux)->PC] = Memoria(*aux); //DECODIFICA A INSTRUCAO
+            printf("Instrucao decodificada %s\n", (*instrucoesDecodificadas)[(*aux)->PC].opcode);
             increment_PC(program_counter, 1);
 
             imprimeRegsAux(*aux);       
@@ -186,7 +187,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             *sinal = AddSinais(instrucoesDecodificadas[(*aux)->PC]);
             (*aux)->registradorA = (*sinal)->RS;
             (*aux)->registradorB = (*sinal)->RT;
-            (*aux)->registradorULA = *program_counter + (*sinal)->imm;
+            (*aux)->registradorULA = (*aux)->PC + (*sinal)->imm;
 
             imprimeRegsAux(*aux);       
             increment_State(StateForBack, 1); 
@@ -205,7 +206,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                 imprimeRegsAux(*aux);       
                 increment_State(StateForBack, 1); 
-                (*aux) = NULL;;
+                
                 return 1;
             }
             
@@ -225,7 +226,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     *program_counter = (*aux)->registradorULA;
                     imprimeRegsAux(*aux);
                     increment_State(StateForBack, 1); 
-                    (*aux) = NULL;;
+                    ;
                     return 1;
                 }
             }
@@ -236,13 +237,13 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 if ((*sinal)->tipo == 3) // lw (load word)
                 {
                     // Carregar dado da memória
-                    strcpy((*aux)->registradorDados, md[(*sinal)->imm]->mem + 8); //copio para o registrador de dados, o dado da memoria
+                    strcpy((*aux)->registradorDados, md[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
                     //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                     
                     imprimeRegsAux(*aux);       
                     increment_State(StateForBack, 1); 
                     return 5;
-            }
+             }
                 else if ((*sinal)->tipo == 4) // sw (store word)
                 {
                     // Armazenar dado na memória
@@ -264,7 +265,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                     imprimeRegsAux(*aux);
                     (*StateForBack)++;
-                    (*aux) = NULL;;
+                    ;
                     return 1;
                 }
                 else if ((*sinal)->tipo == 0) // R-type
@@ -275,7 +276,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                     imprimeRegsAux(*aux);
                     (*StateForBack)++;
-                    (*aux) = NULL;;
+                    ;
                     return 1;
                 }
                 else if ((*sinal)->tipo == 2) // addi
@@ -285,8 +286,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     escritaRegistradores(regs, (*aux)->registradorULA, posicao);
 
                     imprimeRegsAux(*aux);
-                    (*StateForBack)++;
-                    (*aux) = NULL;;                    
+                    (*StateForBack)++;                                   
                     return 1;
                 }
                 break;
@@ -300,7 +300,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     imprimeRegsAux(*aux);       
                     increment_State(StateForBack, 1); 
 
-                    (*aux) = NULL;;
+                    ;
                     return 1;
                 }
                 break;
@@ -312,10 +312,10 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             {
             case 1://Etapa 1 -> Recebe Instrução e Incrementa program_counter
                 printf("Program Counter -> %d\n", *program_counter);
-                *aux = inicializaRegsAux(); //reinicializa-ra os registradores para armazenar novos valores
+                *aux = inicializaRegsAux(*aux); //reinicializa-ra os registradores para armazenar novos valores
                 //verifica se sera um instrucao ou dado
-                if(md[*program_counter]->uso == 'i')
-                    strcpy((*aux)->registradorInst, md[*program_counter]->mem);
+                if(md[*program_counter].uso == 0)
+                    strcpy((*aux)->registradorInst, md[*program_counter].mem);
 
                 else{ //se for dado, incrementa pc e volta para o começo do while
                     increment_PC(program_counter, 1);
@@ -350,7 +350,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     (*program_counter) = jump;
     
                     increment_State(StateForBack, 1); 
-                    (*aux) = NULL;;
+                    ;
                     controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                 }
                 
@@ -369,7 +369,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         *program_counter = (*aux)->registradorULA;
 
                         increment_State(StateForBack, 1); 
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 }
@@ -379,7 +379,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     if ((*sinal)->tipo == 3) // lw (load word)
                     {
                         // Carregar dado da memória
-                        strcpy((*aux)->registradorDados, md[(*sinal)->imm]->mem + 8); //copio para o registrador de dados, o dado da memoria
+                        strcpy((*aux)->registradorDados, md[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
                         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                         
    
@@ -406,7 +406,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escreveDado(md, (*sinal)->imm, conteudo_bin);
 
                         (*StateForBack)++;
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 0) // R-type
@@ -416,7 +416,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, (*aux)->registradorULA, posicao);
 
                         (*StateForBack)++;
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 2) // addi
@@ -426,7 +426,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, (*aux)->registradorULA, posicao);
 
                         (*StateForBack)++;
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, &(*aux)->PC, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     break;
@@ -438,7 +438,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, dados, posicao); // Load: Reg[IR[20:16]] <= MDR
                          
                         increment_State(StateForBack, 1); 
-                        (*aux) = NULL;;
+                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 break;
@@ -455,7 +455,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 }
 
 /*
-void backstep(int *StateForBack, int tamLinhas, int *regs, Memorias **md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal)
+void backstep(int *StateForBack, int tamLinhas, int *regs, Memorias *md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal)
 {
     int jump, RD, RT, i, a=0, auxiliar;
     for (i = 0; i<8; i++){

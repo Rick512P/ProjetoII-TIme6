@@ -10,12 +10,10 @@ Memorias *inicializaMem(){
     return md;
 }
 
-RegistradoresAux *inicializaRegsAux(){
-    RegistradoresAux *RegsAux = malloc(sizeof(RegistradoresAux));
+RegistradoresAux *inicializaRegsAux(RegistradoresAux *RegsAux){
     RegsAux->registradorA = 0;
     RegsAux->registradorB = 0;
     RegsAux->registradorDados[0] = '\0';
-    RegsAux->registradorInst[0] = '\0';
     RegsAux->registradorULA = 0;
     RegsAux->PC = 0;
     return RegsAux;

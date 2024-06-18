@@ -1,7 +1,7 @@
 #include "../Arquivos-h/ULA.h"
 
 
-int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias **memoria, int *regs, RegistradoresAux *aux) {
+int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias *memoria, int *regs, RegistradoresAux *aux) {
     int address, rd;
     if (strcmp((*instrucoesDecodificadas)[*contador].opcode, "0000") == 0 ) {
         char Target[9];

@@ -1,7 +1,7 @@
 index:
 	clear
 	gcc -o executavel Arquivos-c/*.c
-#clear
+	clear
 	./executavel
 
 testes:
@@ -12,6 +12,9 @@ testes:
 clear:
 	@if [ -f executavel ]; then \
 		rm executavel; \
+	fi
+	@if [ -f executavel.exe ]; then \
+		rm executavel.exe; \
 	fi
 	clear
 

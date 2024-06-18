@@ -8,7 +8,7 @@
 
 
 
-int parser(Memorias **memoria, int *tamanho_linhas);
+int parser(Memorias *memoria, int *tamanho_linhas);
 
 
 #endif

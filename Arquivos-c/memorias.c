@@ -8,12 +8,12 @@ type_instruc Memoria(RegistradoresAux *aux){
         return traduzido; //retorna para o controller
 }
 
-void escreveDado(Memorias **mem, int immediate, char *valor) { //ESCREVE O DADO DA POSICAO DE MEMORIA 128 -> 256
+void escreveDado(Memorias *mem, int immediate, char *valor) { //ESCREVE O DADO DA POSICAO DE MEMORIA 128 -> 256
     if (immediate >= 0 && immediate < 256) {
-		if((*mem)[immediate].uso == '\0'){ //se o uso foi \0, entao sera usado para dados ('d')
-			strcpy((*mem)[immediate].mem, "00000000");
-        	strcat((*mem)[immediate].mem, valor);
-			(*mem)[immediate].uso = 'd';
+		if((mem)[immediate].uso == '\0'){ //se o uso foi \0, entao sera usado para dados ('d')
+			strcpy((mem)[immediate].mem, "00000000");
+        	strcat((mem)[immediate].mem, valor);
+			(mem)[immediate].uso = 1;
 		}
 		else{
 			fprintf(stderr, "Tentativa de escrita em endereço ja utilizado por uma instrucao/dado.\n");
