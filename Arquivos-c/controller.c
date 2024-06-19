@@ -22,7 +22,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     strcpy(aux->registradorInst, md[aux->PC].mem);
                     if (strcmp(aux->registradorInst, md[aux->PC].mem) == 0){
                         printf("Instrucao coletada com sucesso!\n");
-                        printf("Instrução correta! Foi lido %s de %s\n", aux->registradorInst, md[aux->PC].mem);
+                        //printf("Instrução correta! Foi lido %s de %s\n", aux->registradorInst, md[aux->PC].mem);
                     }
                     else
                         printf("Instrução incorreta! Foi lido %s ao inves de %s\n", aux->registradorInst, md[aux->PC].mem);
@@ -30,16 +30,15 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 else{ //se for dado, incrementa pc e quebra switch
                     printf("Nao foi encontrado nenhuma instrucao\n\n");
                     increment_PC(program_counter, 1);
-                    return 1;
+                    break;
                 }
 
-                instrucoesDecodificadas[aux->PC] = Memoria(aux); //DECODIFICA A INSTRUCAO
-                *program_counter = increment_PC(program_counter, 1);
+                increment_PC(program_counter, 1);
 
                 imprimeRegsAux(aux);       
                 increment_State(StateForBack, 1); 
-
-                controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 2);
+                instrucoesDecodificadas[aux->PC] = Memoria(aux);
+                controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 2);
 
                 break;
 
@@ -55,29 +54,30 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                 imprimeRegsAux(aux);       
                 increment_State(StateForBack, 1); 
-                controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 3);           
+                controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 3);           
                 break;
             
             case 3://Etapa 3 --> Executa tipo R e Addi, Calcula Endereço LW e SW, Desvia Jump e Beq                           
+                printf("Instrucao %s\n", aux->registradorInst);
+                printf("Sinal-tipo: %d\n", (*sinal)->tipo);
                 printf("Etapa %d\n", ProxEtapa);
                 if ((*sinal)->tipo == 1)//verifica se é Jump
                 {
-                    jump = ULA(instrucoesDecodificadas, program_counter, md, regs, aux);
+                    jump = ULA(instrucoesDecodificadas, &aux->PC, md, regs, aux);
                     (*program_counter) = jump;
                     a++;
     
                     increment_State(StateForBack, 1); 
-                    ;
-                    controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                    controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                 }
                 
                 else if ((*sinal)->tipo == 0 || (*sinal)->tipo == 2 || (*sinal)->tipo == 3 || (*sinal)->tipo == 4)
                 //verifica se é tipo R (0), addi (2), lw (3) ou sw (4)
                 {
-                    aux->registradorULA = ULA(instrucoesDecodificadas, program_counter, md, regs, aux); 
+                    aux->registradorULA = ULA(instrucoesDecodificadas, &aux->PC, md, regs, aux); 
 
                     increment_State(StateForBack, 1); 
-                    controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 4); 
+                    controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 4); 
                 }
                 
                 else if ((*sinal)->tipo == 5)//verifica se é beq
@@ -87,7 +87,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         increment_State(StateForBack, 1); 
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 }
                 break;
@@ -102,7 +102,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         
    
                         increment_State(StateForBack, 1); 
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 5);
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 5);
                     }
                     else if ((*sinal)->tipo == 4) // sw (store word)
                     {
@@ -125,7 +125,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         (*StateForBack)++;
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 0) // R-type
                     {
@@ -135,7 +135,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         (*StateForBack)++;
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 2) // addi
                     {
@@ -144,8 +144,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, aux->registradorULA, posicao);
 
                         (*StateForBack)++;
-                        ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     break;
 
@@ -195,11 +194,11 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 return 1;
             }
 
-            instrucoesDecodificadas[aux->PC] = Memoria(aux); //DECODIFICA A INSTRUCAO
             increment_PC(program_counter, 1);
-
             imprimeRegsAux(aux);       
             increment_State(StateForBack, 1); 
+
+            instrucoesDecodificadas[aux->PC] = Memoria(aux);
             return 2;
             break;
             
@@ -380,27 +379,27 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                 imprimeRegsAux(aux);       
                 increment_State(StateForBack, 1); 
-                controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 3);           
+                controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 3);           
                 break;
             
             case 3://Etapa 3 --> Executa tipo R e Addi, Calcula Endereço LW e SW, Desvia Jump e Beq            
                 if ((*sinal)->tipo == 1)//verifica se é Jump
                 {
-                    jump = ULA(instrucoesDecodificadas, program_counter, md, regs, aux);
+                    jump = ULA(instrucoesDecodificadas, &aux->PC, md, regs, aux);
                     (*program_counter) = jump;
     
                     increment_State(StateForBack, 1); 
                     ;
-                    controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                    controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                 }
                 
                 else if ((*sinal)->tipo == 0 || (*sinal)->tipo == 2 || (*sinal)->tipo == 3 || (*sinal)->tipo == 4)
                 //verifica se é tipo R (0), addi (2), lw (3) ou sw (4)
                 {
-                    aux->registradorULA = ULA(instrucoesDecodificadas, program_counter, md, regs, aux); 
+                    aux->registradorULA = ULA(instrucoesDecodificadas, &aux->PC, md, regs, aux); 
 
                     increment_State(StateForBack, 1); 
-                    controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 4); 
+                    controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 4); 
                 }
                 
                 else if ((*sinal)->tipo == 5)//verifica se é beq
@@ -410,7 +409,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         increment_State(StateForBack, 1); 
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 }
                 break;
@@ -424,7 +423,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         
    
                         increment_State(StateForBack, 1); 
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 5);
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 5);
                     }
                     else if ((*sinal)->tipo == 4) // sw (store word)
                     {
@@ -447,7 +446,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         (*StateForBack)++;
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 0) // R-type
                     {
@@ -457,7 +456,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         (*StateForBack)++;
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     else if ((*sinal)->tipo == 2) // addi
                     {
@@ -467,7 +466,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
                         (*StateForBack)++;
                         ;
-                        controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 1); 
+                        controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                     break;
 
