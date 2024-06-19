@@ -146,7 +146,6 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         escritaRegistradores(regs, dados, posicao); // Load: Reg[IR[20:16]] <= MDR
                          
                         increment_State(StateForBack, 1); 
-                        ;
                         controller(1, StateForBack, NumeroLinhas, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
                     }
                 break;
