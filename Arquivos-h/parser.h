@@ -4,7 +4,6 @@
 
 #include "bibliotecas.h"
 #include "memorias.h"
-#include "carregaDados.h"
 
 
 

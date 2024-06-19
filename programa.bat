@@ -30,9 +30,9 @@ goto menu
 if exist executavel.exe (
     del executavel.exe
 )
-gcc -o executavel Arquivos-c/*.c -g
+gcc -o executavel -g Arquivos-c/*.c
 cls
-executavel.exe
+gdb .\executavel.exe
 pause
 goto menu
 

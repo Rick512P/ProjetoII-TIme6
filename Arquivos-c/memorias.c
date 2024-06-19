@@ -26,7 +26,7 @@ void escreveDado(Memorias *mem, int immediate, char *valor) { //ESCREVE O DADO D
 
 void imprimeMemoria(Memorias *md){
 	for (int i = 0; i < 256; i++) {
-		if(md[i].uso == 'd'){
+		if(md[i].uso == 1){
 			if (i < 10)
 				printf("Dado armazenado no endereco 00%d da MD: [%s]\n", i, md[i].mem);
 			else if (i<100)
@@ -66,6 +66,11 @@ void escreverArquivoMemoria(Memorias *md) {
 	printf("\nArquivo criado com sucesso!\n\n");
 }
 
-
+void remove_newline(char *line) { //remove a quebra de linha
+    size_t len = strcspn(line, "\n");
+    if (line[len] == '\n') {
+        line[len] = '\0';
+    }
+}
     
 

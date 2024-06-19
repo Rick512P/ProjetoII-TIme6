@@ -3,7 +3,6 @@
 
 #include "Assembly.h"
 #include "bibliotecas.h"
-#include "carregaDados.h"
 #include "controller.h"
 #include "decode.h"
 #include "inicializadores.h"

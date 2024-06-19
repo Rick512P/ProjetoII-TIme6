@@ -1,32 +1,32 @@
 #include "../Arquivos-h/imprimeSimulador.h"
 
 
-void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoria){
+void imprimeSimulador(int tamLinhas, type_instruc *instrucoesDecodificadas, Memorias *memoria){
     for(int i=0;i<tamLinhas;i++){
         if(memoria[i].uso == 'i'){ 
             printf("\n\nInstrucao %d de %d: [%s]", i+1, tamLinhas, memoria[i].mem);
-            if (strcmp((*instrucoesDecodificadas)[i].opcode, "0000") == 0){
+            if (strcmp(instrucoesDecodificadas[i].opcode, "0000") == 0){
                 printf("\n======TIPO R=========\n");
-                printf("opcode[%s]\t", (*instrucoesDecodificadas)[i].opcode);
-                printf("rs[%s]\t\t", (*instrucoesDecodificadas)[i].rs);
-                printf("rt[%s]\t\t", (*instrucoesDecodificadas)[i].rt);
-                printf("rd[%s]\t\t", (*instrucoesDecodificadas)[i].rd);
-                printf("funct[%s]\t\t", (*instrucoesDecodificadas)[i].funct);
+                printf("opcode[%s]\t", instrucoesDecodificadas[i].opcode);
+                printf("rs[%s]\t\t", instrucoesDecodificadas[i].rs);
+                printf("rt[%s]\t\t", instrucoesDecodificadas[i].rt);
+                printf("rd[%s]\t\t", instrucoesDecodificadas[i].rd);
+                printf("funct[%s]\t\t", instrucoesDecodificadas[i].funct);
                 printf("\n======================\n");
             }
-            else if (strcmp((*instrucoesDecodificadas)[i].opcode, "0010") == 0){
+            else if (strcmp(instrucoesDecodificadas[i].opcode, "0010") == 0){
                 printf("\n========TIPO J========\n");
-                printf("opcode[%s]\t", (*instrucoesDecodificadas)[i].opcode);
-                printf("addr[%s]\t\t", (*instrucoesDecodificadas)[i].addr);
+                printf("opcode[%s]\t", instrucoesDecodificadas[i].opcode);
+                printf("addr[%s]\t\t", instrucoesDecodificadas[i].addr);
                 printf("\n======================\n");
             } 
 
             else{
                 printf("\n\n=======TIPO I=========\n");
-                printf("opcode[%s]\t", (*instrucoesDecodificadas)[i].opcode);
-                printf("rs[%s]\t\t", (*instrucoesDecodificadas)[i].rs);
-                printf("rt[%s]\t\t", (*instrucoesDecodificadas)[i].rt);
-                printf("imm[%s]\t\t", (*instrucoesDecodificadas)[i].imm);
+                printf("opcode[%s]\t", instrucoesDecodificadas[i].opcode);
+                printf("rs[%s]\t\t", instrucoesDecodificadas[i].rs);
+                printf("rt[%s]\t\t", instrucoesDecodificadas[i].rt);
+                printf("imm[%s]\t\t", instrucoesDecodificadas[i].imm);
                 
                 printf("\n======================\n");
             }
@@ -40,7 +40,7 @@ void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Mem
 }
 
 
-void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instrucoesDecodificadas, int pc){
+void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc *instrucoesDecodificadas, int pc){
     if (memoria == NULL) {
                 fprintf(stderr, "Falha ao obter instruções.\n");
             }
@@ -49,7 +49,7 @@ void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instru
         if(memoria[y].uso == 'i'){
             if (strncmp(memoria[y].mem, "0000", 4) == 0){ //compara os 4 primeiros numeros de memoria com "0000"
             r++;
-            if ((strcmp((*instrucoesDecodificadas)[y].funct, "000")) || (strcmp((*instrucoesDecodificadas)[y].funct, "010") == 0))
+            if ((strcmp(instrucoesDecodificadas[y].funct, "000")) || (strcmp(instrucoesDecodificadas[y].funct, "010") == 0))
                 instAri++;
             else
                 instLogic++;

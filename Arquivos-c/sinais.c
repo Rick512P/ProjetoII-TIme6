@@ -13,66 +13,65 @@ Sinais *inicializaSinais(){
     return sinal;
 }
 
-Sinais *AddSinais(type_instruc *inst){
-    Sinais *sinal = malloc(sizeof(Sinais));
-    if(strcmp(inst->opcode, "0000") == 0){//TIPO R
+Sinais *AddSinais(type_instruc inst, Sinais *sinal){
+    if(strcmp(inst.opcode, "0000") == 0){//TIPO R
         sinal->tipo = 0;
-        sinal->RS = bin_to_decimal(inst->rs);
-        sinal->RT = bin_to_decimal(inst->rt);
-        sinal->RD = bin_to_decimal(inst->rd);
-        sinal->funct = bin_to_decimal(inst->funct);
+        sinal->RS = bin_to_decimal(inst.rs);
+        sinal->RT = bin_to_decimal(inst.rt);
+        sinal->RD = bin_to_decimal(inst.rd);
+        sinal->funct = bin_to_decimal(inst.funct);
         sinal->imm = -1;
         sinal->address = -1;
         return sinal;
     } 
 
-    else if(strcmp(inst->opcode, "0100") == 0){//ADDI
+    else if(strcmp(inst.opcode, "0100") == 0){//ADDI
         sinal->tipo = 2;
-        sinal->RS = bin_to_decimal(inst->rs);
-        sinal->RT = bin_to_decimal(inst->rt);
-        sinal->RD = bin_to_decimal(inst->rd);
-        sinal->imm = bin_to_decimal(inst->imm);
+        sinal->RS = bin_to_decimal(inst.rs);
+        sinal->RT = bin_to_decimal(inst.rt);
+        sinal->RD = bin_to_decimal(inst.rd);
+        sinal->imm = bin_to_decimal(inst.imm);
         sinal->address = -1;
         sinal->funct = -1;
         return sinal;
     }
 
-    else if(strcmp(inst->opcode, "1011") == 0){//LW
+    else if(strcmp(inst.opcode, "1011") == 0){//LW
         sinal->tipo = 3;
-        sinal->RS = bin_to_decimal(inst->rs);
-        sinal->RT = bin_to_decimal(inst->rt);
-        sinal->imm = bin_to_decimal(inst->imm);
+        sinal->RS = bin_to_decimal(inst.rs);
+        sinal->RT = bin_to_decimal(inst.rt);
+        sinal->imm = bin_to_decimal(inst.imm);
         sinal->address = -1;
         sinal->funct = -1;
         return sinal;
     }
 
-    else if(strcmp(inst->opcode, "1111") == 0){//SW
+    else if(strcmp(inst.opcode, "1111") == 0){//SW
         sinal->tipo = 4;
-        sinal->RS = bin_to_decimal(inst->rs);
-        sinal->RT = bin_to_decimal(inst->rt);
-        sinal->imm = bin_to_decimal(inst->imm);
+        sinal->RS = bin_to_decimal(inst.rs);
+        sinal->RT = bin_to_decimal(inst.rt);
+        sinal->imm = bin_to_decimal(inst.imm);
         sinal->address = -1;
         sinal->funct = -1;
         return sinal;
     }
 
-    else if(strcmp(inst->opcode, "1000") == 0){//BEQ
+    else if(strcmp(inst.opcode, "1000") == 0){//BEQ
         sinal->tipo = 5;
-        sinal->RS = bin_to_decimal(inst->rs);
-        sinal->RT = bin_to_decimal(inst->rt);
-        sinal->imm = bin_to_decimal(inst->imm);
+        sinal->RS = bin_to_decimal(inst.rs);
+        sinal->RT = bin_to_decimal(inst.rt);
+        sinal->imm = bin_to_decimal(inst.imm);
         sinal->address = -1;
         sinal->funct = -1;
         return sinal;
     }
 
-    else if(strcmp(inst->opcode, "0010") == 0){//J
+    else if(strcmp(inst.opcode, "0010") == 0){//J
         sinal->tipo = 1;
         sinal->RS = -1;
         sinal->RT = -1;
         sinal->imm = -1;
-        sinal->address = bin_to_decimal(inst->addr);
+        sinal->address = bin_to_decimal(inst.addr);
         sinal->funct = -1;
         return sinal;
     }

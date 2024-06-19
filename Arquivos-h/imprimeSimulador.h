@@ -8,8 +8,8 @@
 #include "menu.h"
 
 
-void imprimeSimulador(int tamLinhas, type_instruc **instrucoesDecodificadas, Memorias *memoria);
-void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc **instrucoesDecodificadas, int pc);
+void imprimeSimulador(int tamLinhas, type_instruc *instrucoesDecodificadas, Memorias *memoria);
+void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc *instrucoesDecodificadas, int pc);
 void imprimeRegsAux(RegistradoresAux *aux);
 
 #endif

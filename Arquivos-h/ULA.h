@@ -11,7 +11,7 @@
 #include "inicializadores.h"
 
 
-int ULA(type_instruc **instrucoesDecodificadas, int *contador, Memorias *md, int *regs, RegistradoresAux *aux);
+int ULA(type_instruc *instrucoesDecodificadas, int *contador, Memorias *md, int *regs, RegistradoresAux *aux);
 void AND(char Source[], char Target[], char *Dest);
 void OR(char Source[], char Target[], char *Dest);
 

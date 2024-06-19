@@ -11,6 +11,6 @@
 #include "menu.h"
 #include "inicializadores.h"
 
-int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias *md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal, int ProxEtapa);
+int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias *md, int *program_counter, type_instruc *instrucoesDecodificadas, RegistradoresAux *aux, Sinais **sinal, int ProxEtapa);
 //void backstep(int *StateForBack, int tamLinhas, int *regs, Memorias *md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal);
 #endif

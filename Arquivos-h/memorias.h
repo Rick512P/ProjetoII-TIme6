@@ -13,7 +13,7 @@ type_instruc Memoria(RegistradoresAux *aux);
 void imprimeMemoria(Memorias *md);
 void escreveDado(Memorias *mem, int contador, char *valor);
 void escreverArquivoMemoria(Memorias *md);
-
+void remove_newline(char *line);
 
 
 

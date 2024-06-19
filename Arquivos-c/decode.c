@@ -3,7 +3,7 @@
 type_instruc decoder(RegistradoresAux *aux){
     type_instruc traducao;
     aux->registradorInst[16] = '\0';
-    
+    strcpy(traducao.inst, aux->registradorInst);
     strncpy(traducao.opcode, aux->registradorInst, 5); //copia para .opcode os 5 primeiros caracteres de memoriaInst[i].instruc
     traducao.opcode[4] = '\0';
     
