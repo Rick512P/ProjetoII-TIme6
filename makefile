@@ -1,7 +1,7 @@
 index:
 	clear
 	gcc -o executavel Arquivos-c/*.c
-	clear
+#clear
 	./executavel
 
 testes:

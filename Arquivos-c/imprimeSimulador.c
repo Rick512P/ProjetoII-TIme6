@@ -89,5 +89,5 @@ void imprimeRegsAux(RegistradoresAux *aux){
     printf("\nRegistrador de Dados da Memoria: %s", aux->registradorDados);
     printf("\nRegistrador A: %d", aux->registradorA);
     printf("\nRegistrador B: %d", aux->registradorB);
-    printf("\nRegistrador ULA saida: %d", aux->registradorULA);
+    printf("\nRegistrador ULA saida: %d\n", aux->registradorULA);
 }

@@ -11,43 +11,54 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
         {        
             switch (ProxEtapa)
             {
-            case 1://Etapa 1 -> Recebe Instrução e Incrementa program_counter
-                printf("Program Counter -> %d\n", *program_counter);
+            case 1://Etapa 1 -> Recebe Instrução e Incrementa program_counter                
                 printf("Etapa %d\n", ProxEtapa);
                 aux = inicializaRegsAux(aux); //reinicializa-ra os registradores para armazenar novos valores
                 //verifica se sera um instrucao ou dado
-                if(md[*program_counter].uso == 0)
-                    strcpy(aux->registradorInst, md[*program_counter].mem);
-
-                else{ //se for dado, incrementa pc e volta para o começo do while
-                    printf("Posicao vazia\n");
+                aux->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
+                printf("Program Counter --> %d\n",aux->PC);
+                
+                if(md[aux->PC].uso == 0){
+                    strcpy(aux->registradorInst, md[aux->PC].mem);
+                    if (strcmp(aux->registradorInst, md[aux->PC].mem) == 0){
+                        printf("Instrucao coletada com sucesso!\n");
+                        printf("Instrução correta! Foi lido %s de %s\n", aux->registradorInst, md[aux->PC].mem);
+                    }
+                    else
+                        printf("Instrução incorreta! Foi lido %s ao inves de %s\n", aux->registradorInst, md[aux->PC].mem);
+                }        
+                else{ //se for dado, incrementa pc e quebra switch
+                    printf("Nao foi encontrado nenhuma instrucao\n\n");
                     increment_PC(program_counter, 1);
-                    continue;
+                    return 1;
                 }
-                instrucoesDecodificadas[*program_counter] = Memoria(aux); //DECODIFICA A INSTRUCAO
 
-                aux[*program_counter].PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
-                increment_PC(program_counter, 1);
+                instrucoesDecodificadas[aux->PC] = Memoria(aux); //DECODIFICA A INSTRUCAO
+                *program_counter = increment_PC(program_counter, 1);
 
-                increment_State(StateForBack, 1);
+                imprimeRegsAux(aux);       
+                increment_State(StateForBack, 1); 
 
                 controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 2);
 
                 break;
 
-            case 2://Etapa 2 -> Decodifico as instruções, gero os sinais e Adiciono valores aos registradores auxiliares
+            case 2://Etapa 2 -> Decodifico as instruções, gero os sinais e Adiciono valores aos registradores auxiliares              
                 printf("Etapa %d\n", ProxEtapa);
-                sinal[aux->PC] = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
+                free(*sinal);
+                *sinal = inicializaSinais();
+                instrucoesDecodificadas[aux->PC] = decoder(aux);
+                *sinal = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
+                aux->registradorA = (*sinal)->RS;
+                aux->registradorB = (*sinal)->RT;
+                aux->registradorULA = aux->PC + (*sinal)->imm;
 
-                aux->registradorA = sinal[aux->PC]->RS;
-                aux->registradorB = sinal[aux->PC]->RT;
-                aux->registradorULA = *program_counter + sinal[aux->PC]->imm;
-     
+                imprimeRegsAux(aux);       
                 increment_State(StateForBack, 1); 
                 controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 3);           
                 break;
             
-            case 3://Etapa 3 --> Executa tipo R e Addi, Calcula Endereço LW e SW, Desvia Jump e Beq            
+            case 3://Etapa 3 --> Executa tipo R e Addi, Calcula Endereço LW e SW, Desvia Jump e Beq                           
                 printf("Etapa %d\n", ProxEtapa);
                 if ((*sinal)->tipo == 1)//verifica se é Jump
                 {
@@ -81,8 +92,8 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 }
                 break;
                                     
-            case 4: // Etapa 4 -> Escreve em Regs para tipo R e Addi, Escreve em Memoria para SW, Lê Valor de Memória para LW              
-                    printf("Etapa %d\n", ProxEtapa);
+            case 4: // Etapa 4 -> Escreve em Regs para tipo R e Addi, Escreve em Memoria para SW, Lê Valor de Memória para LW                              
+                printf("Etapa %d\n", ProxEtapa);
                     if ((*sinal)->tipo == 3) // lw (load word)
                     {
                         // Carregar dado da memória
@@ -194,6 +205,9 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             
         case 2://Etapa 2 -> Decodifico as instruções, gero os sinais e Adiciono valores aos registradores auxiliares        
             printf("Etapa %d\n", ProxEtapa);
+            free(*sinal);
+            *sinal = inicializaSinais();
+            instrucoesDecodificadas[aux->PC] = decoder(aux);
             *sinal = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
             aux->registradorA = (*sinal)->RS;
             aux->registradorB = (*sinal)->RT;
@@ -245,16 +259,16 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             break;
                   
         case 4: // Etapa 4 -> Escreve em Regs para tipo R e Addi, Escreve em Memoria para SW, Lê Valor de Memória para LW
-                printf("Etapa %d\n", ProxEtapa);
-                if ((*sinal)->tipo == 3) // lw (load word)
-                {
-                    // Carregar dado da memória
-                    strcpy(aux->registradorDados, md[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
-                    //Agora sei qual o valor contido na posição 4 da memoria em decimal:
-                    
-                    imprimeRegsAux(aux);       
-                    increment_State(StateForBack, 1); 
-                    return 5;
+            printf("Etapa %d\n", ProxEtapa);
+            if ((*sinal)->tipo == 3) // lw (load word)
+            {
+                // Carregar dado da memória
+                strcpy(aux->registradorDados, md[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
+                //Agora sei qual o valor contido na posição 4 da memoria em decimal:
+                
+                imprimeRegsAux(aux);       
+                increment_State(StateForBack, 1); 
+                return 5;
              }
                 else if ((*sinal)->tipo == 4) // sw (store word)
                 {
@@ -324,34 +338,47 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             switch (ProxEtapa)
             {
             case 1://Etapa 1 -> Recebe Instrução e Incrementa program_counter
-                printf("Program Counter -> %d\n", *program_counter);
+                printf("Etapa %d\n", ProxEtapa);
                 aux = inicializaRegsAux(aux); //reinicializa-ra os registradores para armazenar novos valores
                 //verifica se sera um instrucao ou dado
-                if(md[*program_counter].uso == 0)
-                    strcpy(aux->registradorInst, md[*program_counter].mem);
-
-                else{ //se for dado, incrementa pc e volta para o começo do while
-                    increment_PC(program_counter, 1);
-                    continue;
-                }
-                instrucoesDecodificadas[*program_counter] = Memoria(aux); //DECODIFICA A INSTRUCAO
-
                 aux->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
+                
+                if(md[aux->PC].uso == 0){
+                    strcpy(aux->registradorInst, md[aux->PC].mem);
+                    if (strcmp(aux->registradorInst, md[aux->PC].mem) == 0){
+                        printf("Instrucao coletada com sucesso!\n");
+                        printf("Instrução correta! Foi lido %s de %s\n", aux->registradorInst, md[aux->PC].mem);
+                    }
+                    else
+                        printf("Instrução incorreta! Foi lido %s ao inves de %s\n", aux->registradorInst, md[aux->PC].mem);
+                }        
+                else{ //se for dado, incrementa pc e quebra switch
+                    printf("Nao foi encontrado nenhuma instrucao\n");
+                    increment_PC(program_counter, 1);
+                    return 1;
+                }
+
+                instrucoesDecodificadas[aux->PC] = Memoria(aux); //DECODIFICA A INSTRUCAO
                 increment_PC(program_counter, 1);
 
-                increment_State(StateForBack, 1);
+                imprimeRegsAux(aux);       
+                increment_State(StateForBack, 1); 
 
                 controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 2);
 
                 break;
 
             case 2://Etapa 2 -> Decodifico as instruções, gero os sinais e Adiciono valores aos registradores auxiliares
+                printf("Etapa %d\n", ProxEtapa);
+                free(*sinal);
+                *sinal = inicializaSinais();
+                instrucoesDecodificadas[aux->PC] = decoder(aux);
                 *sinal = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
-
                 aux->registradorA = (*sinal)->RS;
                 aux->registradorB = (*sinal)->RT;
-                aux->registradorULA = *program_counter + (*sinal)->imm;
-     
+                aux->registradorULA = aux->PC + (*sinal)->imm;
+
+                imprimeRegsAux(aux);       
                 increment_State(StateForBack, 1); 
                 controller(1, StateForBack, NumeroLinhas, regs, md, &aux->PC, instrucoesDecodificadas, aux, sinal, 3);           
                 break;
@@ -466,21 +493,3 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
 
     }
 }
-
-/*
-void backstep(int *StateForBack, int tamLinhas, int *regs, Memorias *md, int *program_counter, type_instruc **instrucoesDecodificadas, RegistradoresAux **aux, Sinais **sinal)
-{
-    int jump, RD, RT, i, a=0, auxiliar;
-    for (i = 0; i<8; i++){
-        regs[i]=0;
-    }
-    printf("%d",*StateForBack);
-    auxiliar = *StateForBack;
-    *StateForBack = -1;
-    increment_PC(program_counter, 0);
-
-    controller(1, StateForBack, auxiliar, regs, md, program_counter, instrucoesDecodificadas, aux, sinal, 1);
-
-    imprimeRegsAuxaux;
-}
-*/

@@ -126,7 +126,7 @@ int ULA(type_instruc *instrucoesDecodificadas, int *contador, Memorias *memoria,
 
 
     else{
-        fprintf(stderr, "OPCODE ERROR!");
+        fprintf(stderr, "OPCODE ERROR!\n\n");
     }
 }
 
