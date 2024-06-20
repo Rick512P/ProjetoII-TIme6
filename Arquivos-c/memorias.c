@@ -23,23 +23,12 @@ void escreveDado(Memorias *mem, int immediate, char *valor) { //ESCREVE O DADO D
 
 void imprimeMemoria(Memorias *memoria){
 	for (int i = 0; i < 256; i++) {
-		if(memoria[i].uso == 1){
-			if (i < 10)
-				printf("Dado armazenado no endereco 00%d da memoria: [%s]\n", i, memoria[i].mem);
-			else if (i<100)
-				printf("Dado armazenado no endereco 0%d da memoria: [%s]\n", i, memoria[i].mem);
-			else
-				printf("Dado armazenado no endereco %d da memoria: [%s]\n", i, memoria[i].mem);
-		}
-		else{
-			if (i < 10)
-				printf("Instrucao armazenada no endereco 00%d da memoria: [%s]\n", i, memoria[i].mem);
-			else if (i<100)
-				printf("Instrucao armazenada no endereco 0%d da memoria: [%s]\n", i, memoria[i].mem);
-			else
-				printf("Instrucao armazenada no endereco %d da memoria: [%s]\n", i, memoria[i].mem);
-			
-		}
+		if (i < 10)
+			printf("Instrucao/Dado armazenada(o) no endereco 00%d da memoria: [%s]\n", i, memoria[i].mem);
+		else if (i<100)
+			printf("Instrucao/Dado armazenada(o) no endereco 0%d da memoria: [%s]\n", i, memoria[i].mem);
+		else
+			printf("Instrucao/Dado armazenada(o) no endereco %d da memoria: [%s]\n", i, memoria[i].mem);
 	}
 }
 

@@ -8,7 +8,8 @@ int parser(Memorias *memoria, int *tamanho_linhas){
     printf("Digite 1 para utilizar o diretorio padrao ou 2 para entrar com o diretorio do arquivo: ");
     scanf("%d", &opcao);
     if(opcao == 1)
-        arq = fopen("./memoria/testaTodas.mem", "r");
+        //arq = fopen("./memoria/testaTodas.mem", "r");
+        arq = fopen("./memoria/ExemploAsmBinario.mem", "r");
     else if(opcao == 2){
         printf("Entre com o caminho/nome do arquivo incluindo a extenção .mem\n");
         scanf(" %[^\n]", nome_arquivo);
