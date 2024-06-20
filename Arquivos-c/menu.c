@@ -12,7 +12,7 @@ int menu(){
     Sinais *sinal = NULL;
     unsigned int escolha, tamLinhas, program_counter = 0, cont = 0; //UNSIGNED IMPOSSIBILITA QUE PROGRAM_COUNTER CHEGUE A MENOR QUE 0
     int StateForBack = -1, i = 0, Etapa = 1, auxiliar, verifica = 0;
-    type_instruc *instrucoesDecodificadas = malloc(sizeof(type_instruc*));
+    type_instruc *instrucoesDecodificadas;
     char dat[300]; //Recebe o nome do arquivo.dat
     //int *regs; //registradores como um inteiro mesmo
     //regs = (int*)malloc(8 * sizeof(int));
@@ -59,7 +59,7 @@ int menu(){
             if (verifica == 0){
                 memorias = inicializaMem();
                 parser(memorias, &tamLinhas);
-
+                instrucoesDecodificadas = malloc(tamLinhas * sizeof(type_instruc));
                 AssemblyInst = calloc((tamLinhas + 1), sizeof(Assembly));
                 if (AssemblyInst == NULL) {
                     fprintf(stderr, "Falha ao alocar memória para instrucoes assembly.\n");
@@ -141,7 +141,7 @@ int menu(){
                 StateForBack = -1;
                 break;
             }
-            memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de md
+            memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de memoria
 
             for (i = 0; i<8; i++){
                 regs[i]=0;

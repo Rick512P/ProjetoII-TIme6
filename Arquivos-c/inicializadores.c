@@ -2,12 +2,12 @@
 
 
 Memorias *inicializaMem(){
-    Memorias *md = malloc(256 * sizeof(Memorias));
+    Memorias *memoria = malloc(256 * sizeof(Memorias));
     for(int i = 0; i < 256; i++){
-        md[i].mem[0] = '\0';
-        md[i].uso = -1;
+        memoria[i].mem[0] = '\0';
+        memoria[i].uso = -1;
     }
-    return md;
+    return memoria;
 }
 
 RegistradoresAux *inicializaRegsAux(RegistradoresAux *RegsAux){

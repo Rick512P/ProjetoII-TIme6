@@ -57,7 +57,7 @@ int parser(Memorias *memoria, int *tamanho_linhas){
 
             // Copia a linha para a estrutura memoria
             else if (strlen(linha) == 8){ //SE FOR DADO
-                if((memoria)[i].uso != '\0')
+                if((memoria)[i].uso != -1)
                     fprintf(stderr, "Dado sobrescreveu em endereço ja utilizado por uma instrucao.\n"); //se o uso for terminador nulo, entao esta diponivel
             strcat((memoria)[i].mem, "00000000");
             strcat((memoria)[i].mem, linha);
