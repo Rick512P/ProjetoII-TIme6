@@ -74,17 +74,18 @@ int ULA(type_instruc *instrucoesDecodificadas, int *contador, Memorias *memoria,
 
     else if(strcmp(instrucoesDecodificadas[*contador].opcode,"1011") == 0){// lw GRAVA CONTEUDO DA MEMORIA NOS REGISTRADORES
         //$rt = M[$rs + imm]
-        int endereco, imm;
+        int endereco;
         
         //calculando o endereço de escrita
         endereco = retornoRegs(regs, instrucoesDecodificadas[*contador].rs) + bin_to_decimal(instrucoesDecodificadas[*contador].imm);
+        printf("Imm: %d", bin_to_decimal(instrucoesDecodificadas[*contador].imm));
 
         return(endereco);//retornando o endereço
     }
 
     else if(strcmp(instrucoesDecodificadas[*contador].opcode,"1111") == 0){// sw GRAVA CONTEUDO NA MEMORIA DE DADOS
         //M[$rs + imm] = $rt
-        int endereco, imm;
+        int endereco;
         
         //calculando o endereço de escrita
         endereco = retornoRegs(regs, instrucoesDecodificadas[*contador].rs) + bin_to_decimal(instrucoesDecodificadas[*contador].imm);

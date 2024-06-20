@@ -7,7 +7,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
     switch (op)
     {
     case 1:
-        while (*program_counter <= NumeroLinhas)
+        while (*program_counter <= (NumeroLinhas - 1))
         {        
             switch (ProxEtapa)
             {
@@ -105,9 +105,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                     if ((*sinal)->tipo == 3) // lw (load word)
                     {
                         // Carregar dado da memória
-                        strcpy(aux->registradorDados, memoria[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
-                        //Agora sei qual o valor contido na posição 4 da memoria em decimal:
-                        
+                        strcpy(aux->registradorDados, memoria[aux->registradorULA].mem + 8); //copio para o registrador de dados, o dado da memoria
    
                         increment_State(StateForBack, 1); 
                         controller(1, StateForBack, NumeroLinhas, regs, memoria, program_counter, instrucoesDecodificadas, aux, sinal, 5);
@@ -272,7 +270,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             if ((*sinal)->tipo == 3) // lw (load word)
             {
                 // Carregar dado da memória
-                strcpy(aux->registradorDados, memoria[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
+                strcpy(aux->registradorDados, memoria[aux->registradorULA].mem + 8); //copio para o registrador de dados, o dado da memoria
                 //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                 
                 imprimeRegsAux(aux);       
@@ -599,7 +597,7 @@ int backstep(int BackAux, int *StateForBack, int NumeroLinhas, int *regs, Memori
                     if ((*sinal)->tipo == 3) // lw (load word)
                     {
                         // Carregar dado da memória
-                        strcpy(aux->registradorDados, memoria[(*sinal)->imm].mem + 8); //copio para o registrador de dados, o dado da memoria
+                        strcpy(aux->registradorDados, memoria[aux->registradorULA].mem + 8); //copio para o registrador de dados, o dado da memoria
                         //Agora sei qual o valor contido na posição 4 da memoria em decimal:
                         
    
@@ -624,7 +622,7 @@ int backstep(int BackAux, int *StateForBack, int NumeroLinhas, int *regs, Memori
                         }
                         else{
                             decimalToBinary(conteudo, conteudo_bin);
-                            escreveDado(memoria, (*sinal)->imm, conteudo_bin);
+                            escreveDado(memoria, aux->registradorULA, conteudo_bin);
                         }
                         (*StateForBack)++;
                         backstep(BackAux, StateForBack, NumeroLinhas, regs, memoria, program_counter, instrucoesDecodificadas, aux, sinal, 1);

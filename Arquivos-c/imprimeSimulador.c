@@ -46,7 +46,7 @@ void imprimeEstatisticas(Memorias *memoria, int tamLinhas, type_instruc *instruc
             }
     int r=0, i=0, j=0, instAri=0, instLogic=0, instDesvio=0, instAcessoMem=0;
     for(int y=0;y<tamLinhas;y++){
-        if(memoria[y].uso == 'i'){
+        if(memoria[y].uso == 0){
             if (strncmp(memoria[y].mem, "0000", 4) == 0){ //compara os 4 primeiros numeros de memoria com "0000"
             r++;
             if ((strcmp(instrucoesDecodificadas[y].funct, "000")) || (strcmp(instrucoesDecodificadas[y].funct, "010") == 0))
