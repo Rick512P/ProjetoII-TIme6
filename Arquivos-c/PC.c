@@ -23,7 +23,7 @@ void increment_State(int *StateForBack, int op){
         (*StateForBack)++;
         break;
     case 2:
-        (*StateForBack) = -1;
+        (*StateForBack) = 0;
         break;
     default:
         break;

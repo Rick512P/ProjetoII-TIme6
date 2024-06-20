@@ -138,11 +138,15 @@ int menu(){
             }
             if (StateForBack <= 0){
                 fprintf(stderr, "Usuario ja esta no inicio do programa.");
-                StateForBack = -1;
+                StateForBack = 0;
                 break;
             }
-            memset(memorias, 0, sizeof(memorias)); //anula todo conteudo de memoria
-
+            for(i = 0; i <256 ; i++){
+                if(memorias[i].uso == 1){ //ZERAR APENAS OS DADOS
+                    strcpy(memorias[i].mem, "\0");
+                }
+            }
+            program_counter = 0; //PROGRAM COUNTER COMO 0 PARA REINICIAR TUDO
             for (i = 0; i<8; i++){
                 regs[i]=0;
             }
@@ -150,8 +154,10 @@ int menu(){
 
             auxiliar = StateForBack--;
 
-            Etapa = controller(3, &StateForBack, auxiliar, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);
 
+            
+            /*Etapa = controller(3, &StateForBack, auxiliar, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);*/
+            Etapa = backstep(auxiliar, &StateForBack, auxiliar, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);
             puts(AssemblyInst[aux->PC].InstructsAssembly);
             break;
             
