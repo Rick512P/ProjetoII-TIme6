@@ -126,11 +126,11 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                                 strcpy(conteudo_bin, "01111111"); //Escreve 127
                             else
                                 strcpy(conteudo_bin, "10000000"); //Escreve -128
-                            escreveDado(memoria, (*sinal)->imm, conteudo_bin);
+                            escreveDado(memoria, aux->registradorULA, conteudo_bin);
                         }
                         else{
                             decimalToBinary(conteudo, conteudo_bin);
-                            escreveDado(memoria, (*sinal)->imm, conteudo_bin);
+                            escreveDado(memoria, aux->registradorULA, conteudo_bin);
                         }
                         (*StateForBack)++;
                         controller(1, StateForBack, NumeroLinhas, regs, memoria, program_counter, instrucoesDecodificadas, aux, sinal, 1); 
@@ -293,10 +293,10 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                             strcpy(conteudo_bin, "01111111"); //Escreve 127
                          else
                             strcpy(conteudo_bin, "10000000"); //Escreve -128
-                            escreveDado(memoria, (*sinal)->imm, conteudo_bin);
+                            escreveDado(memoria, aux->registradorULA, conteudo_bin);
                     }
                     decimalToBinary(conteudo, conteudo_bin);
-                    escreveDado(memoria, (*sinal)->imm, conteudo_bin);
+                    escreveDado(memoria, aux->registradorULA, conteudo_bin);
 
                     imprimeRegsAux(aux);
                     (*StateForBack)++;

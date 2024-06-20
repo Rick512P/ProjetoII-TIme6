@@ -25,9 +25,9 @@ int menu(){
     printf("__________________________________________ =INSTRUCT.mem= __________________________________________");
     do{
         printf("\n\n");
-        printf("                              _____________________________________\n");
-        printf("                              |1  +        Carregar memória        +|\n");
-        printf("                              |2  +        Imprimir memória        +|\n");
+        printf("                              _______________________________________\n");
+        printf("                              |1  +        Carregar memoria        +|\n");
+        printf("                              |2  +        Imprimir memoria        +|\n");
         printf("                              |3  +      Imprimir registradores    +|\n");
         printf("                              |4  +      Imprimir estatisticas     +|\n");
         printf("                              |5  +  Imprimir instrucoes Assembly  +|\n");
