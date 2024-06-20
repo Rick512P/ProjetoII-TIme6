@@ -6,6 +6,6 @@
 0000 010 001 100 100 // reg 2 and reg 1 = reg 4
 0000 011 001 101 101 // reg 3 or reg 1 = reg 5
 0000 110 000 110 000 // reg 6 add reg 0 = reg 6
-1000 110 011 000010 // se reg 6 = a reg 3 vai para instrução 10
+1000 110 011 000001 // se reg 6 = a reg 3 vai para instrução 10
 0010 000000000111 // volta para a instrução 7
 1111 110 110 011110 // Salva valor 10 no endereço 40
