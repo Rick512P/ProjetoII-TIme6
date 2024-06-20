@@ -106,25 +106,9 @@ int ULA(type_instruc *instrucoesDecodificadas, int *contador, Memorias *memoria,
     }
 
     else if(strcmp(instrucoesDecodificadas[*contador].opcode,"1000") == 0){ //BEQ
-        int immediate;
-        int reg1 = retornoRegs(regs, instrucoesDecodificadas[*contador].rs);
-        int reg2 = retornoRegs(regs, instrucoesDecodificadas[*contador].rt);
-        immediate = bin_to_decimal(instrucoesDecodificadas[*contador].imm);
-        if(immediate < 0){
-            immediate *= -1; //transforma um possivel valor negativo para positvo, ja que a memoria de dados nao tem posicao negativa.
-        }
-        if (reg1 == reg2){
-            if(((*contador+1) + immediate) > 255){
-                fprintf(stderr, "OVERFLOW. PC ultrapassou limite de espaços de memória.\n");
-                return -1;
-            }
-                return ((*contador) += immediate);
-        }
-        else
-            return (*contador);    
+        aux->registradorA = retornoRegs(regs, instrucoesDecodificadas[*contador].rs);
+        aux->registradorB = retornoRegs(regs, instrucoesDecodificadas[*contador].rt);
     }
-
-
     else{
         fprintf(stderr, "OPCODE ERROR!\n\n");
     }

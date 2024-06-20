@@ -48,6 +48,7 @@ int menu(){
             for(i=0;i<8;i++){
                 regs[i] = 0;
             }
+            free(sinal);
             free(AssemblyInst);
             free(instrucoesDecodificadas);
             system("clear");
@@ -120,9 +121,9 @@ int menu(){
                 printf("Instrucoes nao carregadas");
                 break;
             }
-            printf("Auxiliar pc: %d\n", aux->PC);
-            printf("instrucao: %s\n", memorias[aux->PC].mem);
-            printf("uso: %d\n", memorias[aux->PC].uso);
+            //printf("Auxiliar pc: %d\n", aux->PC);
+            printf("\ninstrucao: %s\n", memorias[aux->PC].mem);
+            //printf("uso: %d\n", memorias[aux->PC].uso);
             Etapa = controller(2, &StateForBack, tamLinhas, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             printf("\n"); 
@@ -130,7 +131,7 @@ int menu(){
             break;
 
         case 11: //Chamar função responsável por retornar uma instrução (PC--)
-            printf("State: %d\n", StateForBack);
+            printf("StateforBack: %d\n", StateForBack);
             if(memorias == NULL){
                 printf("Instrucoes nao carregadas");
                 break;

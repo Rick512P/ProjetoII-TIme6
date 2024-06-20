@@ -3,7 +3,7 @@
 
 void imprimeSimulador(int tamLinhas, type_instruc *instrucoesDecodificadas, Memorias *memoria){
     for(int i=0;i<tamLinhas;i++){
-        if(memoria[i].uso == 'i'){ 
+        if(memoria[i].uso == 0){ 
             printf("\n\nInstrucao %d de %d: [%s]", i+1, tamLinhas, memoria[i].mem);
             if (strcmp(instrucoesDecodificadas[i].opcode, "0000") == 0){
                 printf("\n======TIPO R=========\n");
@@ -32,7 +32,7 @@ void imprimeSimulador(int tamLinhas, type_instruc *instrucoesDecodificadas, Memo
             }
         }
 
-        else{
+        else if(memoria[i].uso == 1){
             printf("\n\nDado %d: [%s]",i+1, memoria[i].mem);
         }
             
@@ -89,5 +89,5 @@ void imprimeRegsAux(RegistradoresAux *aux){
     printf("\nRegistrador de Dados da Memoria: %s", aux->registradorDados);
     printf("\nRegistrador A: %d", aux->registradorA);
     printf("\nRegistrador B: %d", aux->registradorB);
-    printf("\nRegistrador ULA saida: %d\n", aux->registradorULA);
+    printf("\nRegistrador ULA saida: %d\n\n", aux->registradorULA);
 }
