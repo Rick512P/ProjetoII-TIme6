@@ -54,7 +54,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                 *sinal = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
                 aux->registradorA = (*sinal)->RS;
                 aux->registradorB = (*sinal)->RT;
-                aux->registradorULA = aux->PC + (*sinal)->imm;
+                aux->registradorULA = *program_counter + (*sinal)->imm;
 
                 imprimeRegsAux(aux);       
                 increment_State(StateForBack, 1);
@@ -219,7 +219,7 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             *sinal = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
             aux->registradorA = (*sinal)->RS;
             aux->registradorB = (*sinal)->RT;
-            aux->registradorULA = aux->PC + (*sinal)->imm;
+            aux->registradorULA = *program_counter + (*sinal)->imm;
 
             imprimeRegsAux(aux);       
             increment_State(StateForBack, 1); 
@@ -542,7 +542,7 @@ int backstep(int BackAux, int *StateForBack, int NumeroLinhas, int *regs, Memori
                 *sinal = AddSinais(instrucoesDecodificadas[aux->PC], *sinal);
                 aux->registradorA = (*sinal)->RS;
                 aux->registradorB = (*sinal)->RT;
-                aux->registradorULA = aux->PC + (*sinal)->imm;
+                aux->registradorULA = *program_counter + (*sinal)->imm;
 
                 increment_State(StateForBack, 1);
                 backstep(BackAux, StateForBack, NumeroLinhas, regs, memoria, program_counter, instrucoesDecodificadas, aux, sinal, 3);     
