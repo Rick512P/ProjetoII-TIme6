@@ -12,11 +12,9 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
             switch (ProxEtapa)
             {
             case 1://Etapa 1 -> Recebe Instrução e Incrementa program_counter                
-                printf("\nEtapa %d\n", ProxEtapa);
                 aux = inicializaRegsAux(aux); //reinicializa-ra os registradores para armazenar novos valores
                 //verifica se sera um instrucao ou dado
                 aux->PC = *program_counter; // Declaro que o registrador auxiliar PC recebe o valor de program_counter, pois irei incrementar o program_counter nesta etapa
-                printf("Program Counter --> %d\n",aux->PC);
                 
                 if(memoria[aux->PC].uso == 0){
                     strcpy(aux->registradorInst, memoria[aux->PC].mem);
@@ -27,10 +25,16 @@ int controller(int op, int *StateForBack, int NumeroLinhas, int *regs, Memorias 
                         printf("Instrução incorreta! Foi lido %s ao inves de %s\n", aux->registradorInst, memoria[aux->PC].mem);
                 }        
                 else{ //se for dado, incrementa pc e quebra switch
-                    printf("Nao foi encontrado nenhuma instrucao\n\n");
-                    increment_PC(program_counter, 1);
+                    if (*program_counter != NumeroLinhas)
+                    {
+                        printf("Nao foi encontrado nenhuma instrucao\n\n");
+                    }                    
+                        increment_PC(program_counter, 1);
                     break;
                 }
+                
+                printf("\nEtapa %d\n", ProxEtapa);
+                printf("Program Counter --> %d\n",aux->PC);
 
                 increment_PC(program_counter, 1);
 

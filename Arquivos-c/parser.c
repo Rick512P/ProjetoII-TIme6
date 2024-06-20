@@ -2,8 +2,8 @@
 
 //RESPONSAVEL POR ABRIR O ARQUIVO E ENCHER A MEMORIA DE INSTRUÇÕES
 int parser(Memorias *memoria, int *tamanho_linhas){
-    char linha[100], nome_arquivo[200];
-    int contador_de_linhas = 0, opcao;
+    char linha[100], nome_arquivo[200], *token;
+    int contador_de_linhas = 0, opcao, contadorAux = 0;
     FILE *arq;
     printf("Digite 1 para utilizar o diretorio padrao ou 2 para entrar com o diretorio do arquivo: ");
     scanf("%d", &opcao);
@@ -24,14 +24,12 @@ int parser(Memorias *memoria, int *tamanho_linhas){
 
         //primeiro, conto quantas linhas de instruçoes terei no arquivo
         while(fgets(linha, sizeof(linha), arq) != NULL){
-            if (strlen(linha) > 17){
+            if (strlen(linha) > 19){
                 fprintf(stderr, "OVERFLOW. Numero de bits maior que 16."); //FLAG OVERFLOW
                 return -1;
-            }
-            contador_de_linhas++;
+            }           
+            contador_de_linhas++; 
         }
-        
-        *tamanho_linhas = contador_de_linhas;
 
         //alocaçao de memoria que minha variavel memoria terá será = ao tanto de linhas do arquivo lido
         //*memoria = malloc(contador_de_linhas * sizeof(Memorias));
@@ -57,34 +55,29 @@ int parser(Memorias *memoria, int *tamanho_linhas){
             }
 
             // Copia a linha para a estrutura memoria
-            else if (strlen(linha) == 8){ //SE FOR DADO
-                if((memoria)[i].uso != -1)
-                    fprintf(stderr, "Dado sobrescreveu em endereço ja utilizado por uma instrucao.\n"); //se o uso for terminador nulo, entao esta diponivel
-            strcat((memoria)[i].mem, "00000000");
-            strcat((memoria)[i].mem, linha);
-            (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-            (memoria)[i].uso = 1;
-            }
 
             else{
                 if(((memoria)[i].uso != -1))
                     fprintf(stderr, "Instrucao sobrescreveu em endereço ja utilizado por um dado.\n"); //se o uso for terminador nulo, entao esta diponivel
-            strncpy((memoria)[i].mem, linha, 17);
-            (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
-            (memoria)[i].uso = 0;
+                
+                token = strtok(linha,";");
+                strncpy((memoria)[i].mem, token, 17);
+                
+                token = strtok(NULL,";");
+                (memoria)[i].uso = atoi(token);
+                if (atoi(token) == 0)
+                    contadorAux++;
+                
+                (memoria)[i].mem[sizeof((memoria)[i].mem) - 1] = '\0'; // certifica-se de que a string termina com null terminator
             }
 
-            i++;
-            if(i == 255){
-                printf("\nNumero de instrucoes atingiu limite maximo na memoria\n");
-                break;
-            }
-                
+            i++;                
         }     
             fclose(arq);
             printf("Arquivo lido com sucesso!");
     }
     else
         fprintf(stderr, "Erro ao abrir arquivo de instrucoes.");
+    *tamanho_linhas = contadorAux;
     return 0; // Retorna 0 indicando sucesso
 }

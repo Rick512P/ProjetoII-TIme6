@@ -34,7 +34,12 @@ void imprimeMemoria(Memorias *memoria){
 
 void escreverArquivoMemoria(Memorias *memoria) {
 	FILE *arquivo;
-	arquivo = fopen("./DATA.dat", "w");
+	char nome[256];
+
+	puts("Entre com o nome do arquivo");
+	scanf(" %[^\n]", nome);
+	strcat(nome,".mem");
+	arquivo = fopen(nome, "w");
 	
 	if(arquivo==NULL){
 		fprintf(stderr, "Erro ao abrir o arquivo DATA.dat\n");
@@ -42,10 +47,13 @@ void escreverArquivoMemoria(Memorias *memoria) {
 	
 	for (int i=0; i<256; i++){
 		if(memoria[i].uso == 1)
-			fprintf(arquivo, "%s\n", memoria[i].mem);
-		else{
+			fprintf(arquivo, "%s;1\n", memoria[i].mem);
+		
+		else if (memoria[i].uso == 0)
+			fprintf(arquivo, "%s;0\n", memoria[i].mem);
+		
+		else
 			fprintf(arquivo, "\n");
-		}
 	}
 	
 	fclose(arquivo);

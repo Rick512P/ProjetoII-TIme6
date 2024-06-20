@@ -33,7 +33,7 @@ int menu(){
         printf("                              |5  +  Imprimir instrucoes Assembly  +|\n");
         printf("                              |6  +    Imprimir todo o simulador   +|\n");
         printf("                              |7  +          Salvar .asm           +|\n");
-        printf("                              |8  +          Salvar .dat           +|\n");
+        printf("                              |8  +          Salvar .mem           +|\n");
         printf("                              |9  +      Executa Programa (run)    +|\n");
         printf("                              |10 +    Executa instrucao (step)    +|\n");
         printf("                              |11 +   Volta uma instrucao (back)   +|\n");
@@ -112,6 +112,7 @@ int menu(){
                 printf("Instrucoes nao carregadas");
                 break;
             }
+          
             Etapa = controller(1, &StateForBack, tamLinhas, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);
             AsmCopy(instrucoesDecodificadas, &AssemblyInst, tamLinhas);
             break;
@@ -136,7 +137,7 @@ int menu(){
                 printf("Instrucoes nao carregadas\n");
                 break;
             }
-            if (StateForBack <= 0){
+            if (StateForBack <= -1){
                 fprintf(stderr, "Usuario ja esta no inicio do programa.\n");
                 StateForBack = -1;
                 break;

@@ -65,7 +65,6 @@ int ULA(type_instruc *instrucoesDecodificadas, int *contador, Memorias *memoria,
         int immediate;
         immediate = bin_to_decimal(instrucoesDecodificadas[*contador].imm);
         aux->registradorA = retornoRegs(regs, instrucoesDecodificadas[*contador].rs);
-        printf("imm: %d\tregA: %d\n", immediate, aux->registradorA);
         if ((immediate + aux->registradorA) > 127 || (immediate + aux->registradorA) < -128){
                 fprintf(stderr, "Overflow. Registrador RD com numero de bits maior que a capacidade suportada.\n");
         }
@@ -78,7 +77,6 @@ int ULA(type_instruc *instrucoesDecodificadas, int *contador, Memorias *memoria,
         
         //calculando o endereço de escrita
         endereco = retornoRegs(regs, instrucoesDecodificadas[*contador].rs) + bin_to_decimal(instrucoesDecodificadas[*contador].imm);
-        printf("Imm: %d", bin_to_decimal(instrucoesDecodificadas[*contador].imm));
 
         return(endereco);//retornando o endereço
     }
