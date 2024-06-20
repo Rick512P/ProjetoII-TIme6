@@ -131,14 +131,14 @@ int menu(){
             break;
 
         case 11: //Chamar função responsável por retornar uma instrução (PC--)
-            printf("StateforBack: %d\n", StateForBack);
+            printf("StateforBack: %d\n", StateForBack--);
             if(memorias == NULL){
-                printf("Instrucoes nao carregadas");
+                printf("Instrucoes nao carregadas\n");
                 break;
             }
             if (StateForBack <= 0){
-                fprintf(stderr, "Usuario ja esta no inicio do programa.");
-                StateForBack = 0;
+                fprintf(stderr, "Usuario ja esta no inicio do programa.\n");
+                StateForBack = -1;
                 break;
             }
             for(i = 0; i <256 ; i++){
@@ -146,19 +146,17 @@ int menu(){
                     strcpy(memorias[i].mem, "\0");
                 }
             }
-            program_counter = 0; //PROGRAM COUNTER COMO 0 PARA REINICIAR TUDO
             for (i = 0; i<8; i++){
                 regs[i]=0;
             }
             Etapa = 1;
-
             auxiliar = StateForBack--;
 
+            program_counter = 0; //PROGRAM COUNTER COMO 0 PARA REINICIAR TUDO
+            StateForBack = -1;
 
-            
             /*Etapa = controller(3, &StateForBack, auxiliar, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);*/
             Etapa = backstep(auxiliar, &StateForBack, auxiliar, regs, memorias, &program_counter, instrucoesDecodificadas, aux, &sinal, Etapa);
-            puts(AssemblyInst[aux->PC].InstructsAssembly);
             break;
             
         default:
