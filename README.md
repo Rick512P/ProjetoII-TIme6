@@ -1,8 +1,8 @@
 #Simulador da Arquitetura MIPS (Versão 8 bits)
-Este repositório contém o código-fonte e a documentação para o Simulador da Arquitetura MIPS em sua versão compacta de 8 bits, desenvolvido como parte do projeto integrador das disciplinas Projeto Integrador II e Algoritmos e Estrutura de Dados.
+Este repositório contém o código-fonte e a documentação para o Simulador da Arquitetura MIPS multiciclo em sua versão compacta de 8 bits, desenvolvido como parte do projeto integrador das disciplinas Projeto Integrador II e Algoritmos e Estrutura de Dados.
 
 ## Resumo
-O projeto aborda o processo de construção e planejamento do Simulador da Arquitetura MIPS em uma versão mais compacta de 8 bits, implementada inteiramente na linguagem C. Desenvolvido com base nos princípios ensinados até o terceiro semestre do curso de Engenharia de Computação da UNIPAMPA - Campus Bagé, o simulador inclui os principais componentes de uma arquitetura MIPS, como Memória de Instruções, Unidade de Controle, Contador de Programa (PC), Banco de Registradores, Unidade Lógica e Aritmética (ULA) e Memória de Dados.
+O projeto aborda o processo de construção e planejamento do Simulador da Arquitetura MIPS multiciclo em uma versão mais compacta de 8 bits, implementada inteiramente na linguagem C. Desenvolvido com base nos princípios ensinados até o terceiro semestre do curso de Engenharia de Computação da UNIPAMPA - Campus Bagé, o simulador inclui os principais componentes de uma arquitetura MIPS, como Memória, Unidade de Controle, Contador de Programa (PC), Banco de Registradores, Unidade Lógica e Aritmética (ULA), Registradores Auxiliares, etc.
 
 ## Introdução
 O projeto surge da aplicação prática dos conhecimentos adquiridos nos primeiros três semestres do curso de Engenharia de Computação, incluindo algoritmos, estruturas de dados, projeto digital e fundamentos de hardware e software. Utilizando os conceitos aprendidos, como tipos abstratos de dados (TADs), conversões de bases numéricas e tradução de instruções em linguagem de máquina para Assembly, o simulador foi desenvolvido inteiramente em linguagem C.
