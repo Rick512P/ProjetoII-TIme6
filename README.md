@@ -1,4 +1,4 @@
-# Simulador da Arquitetura MIPS (Versão 8 bits)
+# Simulador da Arquitetura MIPS (Versão 8 bits) Multiciclo
 Este repositório contém o código-fonte e a documentação para o Simulador da Arquitetura MIPS multiciclo em sua versão compacta de 8 bits, desenvolvido como parte do projeto integrador das disciplinas Projeto Integrador II e Algoritmos e Estrutura de Dados.
 
 ## Resumo
